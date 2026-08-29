@@ -1,1 +1,13 @@
-# Add project dependencies here.
+# for training nn and for backend
+numpy
+pandas
+scipy
+torch
+wntr
+tqdm
+matplotlib
+networkx
+plotly
+fastapi
+uvicorn
+pydantic
