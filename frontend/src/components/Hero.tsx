@@ -9,6 +9,16 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// How many frames to load immediately, before the user has scrolled at all.
+// Should comfortably cover what a normal scroll speed would reach before
+// the background loader has had a chance to catch up.
+const EAGER_FRAME_COUNT = 30;
+
+// How many frame requests are allowed in flight at once for the rest of
+// the sequence. Keeps this component from monopolizing the browser's
+// connection pool and starving other images on the page.
+const BACKGROUND_LOAD_CONCURRENCY = 4;
+
 export default function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,32 +33,73 @@ export default function Hero() {
     canvas.height = 1080;
 
     const frameCount = 240;
-    
-    const getFramePath = (index: number) => 
+
+    const getFramePath = (index: number) =>
       `/images/frames/ezgif-frame-${String(index + 1).padStart(3, '0')}.jpg`;
 
-    const images: HTMLImageElement[] = [];
+    const images: HTMLImageElement[] = new Array(frameCount);
     const frameObj = { frame: 0 };
+    let cancelled = false;
 
-    // 1. Preload all frames
-    for (let i = 0; i < frameCount; i++) {
-      const img = new window.Image();
-      img.src = getFramePath(i);
-      images.push(img);
-    }
-
-    // 2. Draw first frame on load
-    images[0].onload = () => {
-      context.drawImage(images[0], 0, 0, canvas.width, canvas.height);
+    const loadFrame = (i: number): Promise<void> => {
+      return new Promise((resolve) => {
+        const img = new window.Image();
+        img.onload = () => resolve();
+        img.onerror = () => resolve(); // don't let one bad frame block the queue
+        img.src = getFramePath(i);
+        images[i] = img;
+      });
     };
 
-    // 3. Render function
+    // 1. Eagerly load the first chunk of frames right away, in priority order.
+    const eagerCount = Math.min(EAGER_FRAME_COUNT, frameCount);
+    const eagerLoads = Promise.all(
+      Array.from({ length: eagerCount }, (_, i) => loadFrame(i))
+    );
+
+    eagerLoads.then(() => {
+      if (cancelled || !images[0]) return;
+      context.drawImage(images[0], 0, 0, canvas.width, canvas.height);
+    });
+
+    // 2. Load the remaining frames in the background, limited concurrency,
+    //    so they don't compete with everything else loading on the page.
+    const loadRemainingFrames = async () => {
+      await eagerLoads;
+      if (cancelled) return;
+
+      let nextIndex = eagerCount;
+
+      const worker = async () => {
+        while (!cancelled && nextIndex < frameCount) {
+          const i = nextIndex;
+          nextIndex += 1;
+          await loadFrame(i);
+        }
+      };
+
+      const workers = Array.from(
+        { length: BACKGROUND_LOAD_CONCURRENCY },
+        () => worker()
+      );
+      await Promise.all(workers);
+    };
+
+    loadRemainingFrames();
+
+    // 3. Render function — if a frame hasn't loaded yet (user scrolled ahead
+    //    of the background loader), just hold the last successfully drawn
+    //    frame instead of drawing nothing.
+    let lastDrawnFrame = 0;
     const render = () => {
-      if (images[frameObj.frame]) {
-         context.clearRect(0, 0, canvas.width, canvas.height);
-         context.drawImage(images[frameObj.frame], 0, 0, canvas.width, canvas.height);
-         setCurrentFrame(Math.round(frameObj.frame)); 
+      const target = images[frameObj.frame];
+      if (target && target.complete && target.naturalWidth > 0) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(target, 0, 0, canvas.width, canvas.height);
+        lastDrawnFrame = frameObj.frame;
       }
+      // else: keep showing lastDrawnFrame's pixels already on the canvas
+      setCurrentFrame(Math.round(frameObj.frame));
     };
 
     // 4. Wrap GSAP logic in gsap.context()
@@ -57,7 +108,7 @@ export default function Hero() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=400%", 
+          end: "+=400%",
           scrub: 0.5,
           pin: true,
         }
@@ -69,10 +120,11 @@ export default function Hero() {
         ease: "none",
         onUpdate: render
       });
-    }, containerRef); // <- Scoped to the Hero container!
+    }, containerRef);
 
     // Safely revert ONLY this component's animations on unmount
     return () => {
+      cancelled = true;
       ctx.revert();
     };
   }, []);
@@ -80,9 +132,9 @@ export default function Hero() {
   // Helper function to calculate opacity based on the current frame.
   const getOpacity = (startFrame: number, endFrame: number) => {
     if (currentFrame < startFrame || currentFrame > endFrame) return 0;
-    
+
     const fadeDuration = 15;
-    
+
     // Fade in
     if (currentFrame < startFrame + fadeDuration) {
       return (currentFrame - startFrame) / fadeDuration;
@@ -97,37 +149,37 @@ export default function Hero() {
 
   return (
     <section ref={containerRef} className="relative w-full h-screen bg-[#000] overflow-hidden">
-      
+
       {/* Scroll-scrubbed Video Canvas */}
-      <canvas 
-        ref={canvasRef} 
+      <canvas
+        ref={canvasRef}
         className="absolute inset-0 w-full h-full object-cover"
       />
-      
+
       {/* Dark gradient overlay to ensure text is always readable over the moving pipes */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent z-10 pointer-events-none" />
 
       {/* --- TEXT SCREEN 1 (Frames 0 to 60) --- */}
-      <div 
+      <div
         className="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none transition-opacity duration-75"
         style={{ opacity: getOpacity(0, 60) }}
       >
         <div className="relative w-full max-w-[1200px] h-[250px] flex items-center justify-center -mt-20">
-          
+
           {/* Top Left Text */}
           <div className="absolute left-8 lg:left-12 top-0">
             <p className="text-gray-300 text-xl lg:text-2xl font-montserrat leading-snug">
               Intelligent Monitoring for<br/>Water Networks.
             </p>
           </div>
-          
+
           {/* Center Logo + Text */}
           <div className="flex flex-col items-center gap-2">
-            <Image 
-              src="/images/group 4.webp" 
-              alt="LS Logo" 
-              width={220} 
-              height={100} 
+            <Image
+              src="/images/group 4.webp"
+              alt="LS Logo"
+              width={220}
+              height={100}
               className="object-contain"
             />
             <h1 className="text-white text-5xl lg:text-7xl font-[700] tracking-tight">
@@ -146,7 +198,7 @@ export default function Hero() {
       </div>
 
       {/* --- TEXT SCREEN 2 (Frames 60 to 120) --- */}
-      <div 
+      <div
         className="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none transition-opacity duration-75"
         style={{ opacity: getOpacity(60, 120) }}
       >
@@ -164,7 +216,7 @@ export default function Hero() {
       </div>
 
       {/* --- TEXT SCREEN 3 (Frames 120 to 180) --- */}
-      <div 
+      <div
         className="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none transition-opacity duration-75"
         style={{ opacity: getOpacity(120, 180) }}
       >
@@ -179,14 +231,14 @@ export default function Hero() {
       </div>
 
       {/* --- TEXT SCREEN 4 (Frames 180 to 240) --- */}
-      <div 
+      <div
         className="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none transition-opacity duration-75"
         style={{ opacity: getOpacity(180, 240) }}
       >
         <p className="text-white text-4xl font-montserrat max-w-4xl text-center leading-relaxed -mt-20">
           Built on physics, driven by data, LeakSense delivers accurate leak localization while reducing the need for extensive sensor deployment.
         </p>
-        
+
         {/* Scroll Indicator */}
         <div className="absolute bottom-12 flex items-center gap-2 text-gray-300 font-montserrat text-sm tracking-widest animate-pulse">
           Explore the System <span>↓</span>

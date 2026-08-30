@@ -140,7 +140,7 @@ export default function PresentationScroller() {
                 Current Challenges
               </h3>
 
-              <h2 className="text-[65px] font-[700] text-[#F02B11] leading-none mb-0">
+              <h2 className="text-[65px] font-[700] text-[#] leading-none mb-0">
                 {slide.id}
               </h2>
               

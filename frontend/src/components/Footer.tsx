@@ -22,7 +22,7 @@ export default function Footer() {
       `}} />
 
       {/* Top Right Links */}
-      <div className="absolute top-12 right-16 lg:right-25 flex flex-col items-start gap-1 z-20 text-white font-[700] text-lg lg:text-xl">
+      <div className="absolute top-12 right-16 lg:right-25 flex flex-col items-start gap-1 z-20 text-white font-[500] text-lg lg:text-xl">
         <a href="#" className="hover:opacity-70 transition-opacity">Home</a>
         <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:opacity-70 transition-opacity">Github</a>
       </div>

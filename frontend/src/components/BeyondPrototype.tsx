@@ -157,7 +157,7 @@ export default function BeyondPrototype() {
             <div className="flex flex-row justify-start items-start gap-8 lg:gap-12 w-full pt-4">
               
               <div className="w-auto lg:w-[328px] shrink-0">
-                <h2 className="text-[#F02B11] text-3xl lg:text-4xl font-[600] whitespace-pre-line leading-[1.1]">
+                <h2 className="text-[#1664bf] text-3xl lg:text-4xl font-[600] whitespace-pre-line leading-[1.1]">
                   {app.title}
                 </h2>
               </div>
