@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
@@ -14,7 +14,7 @@ export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentFrame, setCurrentFrame] = useState(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
     if (!canvas || !context || !containerRef.current) return;
@@ -24,7 +24,6 @@ export default function Hero() {
 
     const frameCount = 240;
     
-    // Pads the frame number to 3 digits (001 to 240)
     const getFramePath = (index: number) => 
       `/images/frames/ezgif-frame-${String(index + 1).padStart(3, '0')}.jpg`;
 
@@ -43,35 +42,38 @@ export default function Hero() {
       context.drawImage(images[0], 0, 0, canvas.width, canvas.height);
     };
 
-    // 3. Render function: draws canvas AND updates React state for text syncing
+    // 3. Render function
     const render = () => {
       if (images[frameObj.frame]) {
          context.clearRect(0, 0, canvas.width, canvas.height);
          context.drawImage(images[frameObj.frame], 0, 0, canvas.width, canvas.height);
-         setCurrentFrame(Math.round(frameObj.frame)); // Sync state to drive text opacity
+         setCurrentFrame(Math.round(frameObj.frame)); 
       }
     };
 
-    // 4. GSAP ScrollTrigger to scrub the video
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "+=400%", // 400% height allows enough scrolling time for all 4 text blocks to breathe
-        scrub: 0.5,
-        pin: true,
-      }
-    });
+    // 4. Wrap GSAP logic in gsap.context()
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "+=400%", 
+          scrub: 0.5,
+          pin: true,
+        }
+      });
 
-    tl.to(frameObj, {
-      frame: frameCount - 1,
-      snap: "frame",
-      ease: "none",
-      onUpdate: render
-    });
+      tl.to(frameObj, {
+        frame: frameCount - 1,
+        snap: "frame",
+        ease: "none",
+        onUpdate: render
+      });
+    }, containerRef); // <- Scoped to the Hero container!
 
+    // Safely revert ONLY this component's animations on unmount
     return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      ctx.revert();
     };
   }, []);
 

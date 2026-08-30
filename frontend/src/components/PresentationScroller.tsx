@@ -21,7 +21,7 @@ const slides = [
     body: "Sensors at both ends only show that water was lost not where. Monitoring a pipeline isn't the same as being able to localize a problem inside it.",
     eg: 'An unexplained loss could be 200m in or 8km in every response starts by searching the whole length.',
     imageFirstHalf: '/images/Frame 1 (2).webp',
-    imageSecondHalf: '/images/Frame 4.webp',
+    imageSecondHalf: '/images/Frame 4 (1).webp',
   },
   {
     id: '03',
