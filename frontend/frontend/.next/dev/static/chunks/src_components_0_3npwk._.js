@@ -901,6 +901,8 @@ __turbopack_context__.s([
     ()=>NODES,
     "NODE_BY_ID",
     ()=>NODE_BY_ID,
+    "OPTIMAL_PLACEMENT_ORDER",
+    ()=>OPTIMAL_PLACEMENT_ORDER,
     "default",
     ()=>LiveDemo
 ]);
@@ -912,632 +914,565 @@ var _s = __turbopack_context__.k.signature();
 ;
 const NODES = [
     {
-        id: "1",
-        label: "RES",
-        kind: "reservoir",
-        x: 50,
-        y: 310,
-        demand: 0,
-        pressure: 60
-    },
-    // Col 1
-    {
         id: "2",
         label: "N2",
         kind: "junction",
-        x: 150,
-        y: 100,
-        demand: 100,
-        pressure: 50
+        x: 470,
+        y: 313,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "3",
         label: "N3",
         kind: "junction",
-        x: 150,
-        y: 200,
-        demand: 120,
-        pressure: 48
+        x: 468,
+        y: 348,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "4",
         label: "N4",
         kind: "junction",
-        x: 150,
-        y: 310,
-        demand: 90,
-        pressure: 45
+        x: 536,
+        y: 348,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "5",
         label: "N5",
         kind: "junction",
-        x: 150,
-        y: 420,
-        demand: 110,
-        pressure: 44
+        x: 584,
+        y: 348,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "6",
         label: "N6",
         kind: "junction",
-        x: 150,
-        y: 520,
-        demand: 150,
-        pressure: 41
+        x: 631,
+        y: 348,
+        demand: 0,
+        pressure: 0
     },
-    // Col 2
     {
         id: "7",
         label: "N7",
         kind: "junction",
-        x: 280,
-        y: 100,
-        demand: 80,
-        pressure: 47
+        x: 631,
+        y: 380,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "8",
         label: "N8",
         kind: "junction",
-        x: 280,
-        y: 200,
-        demand: 100,
-        pressure: 46
+        x: 631,
+        y: 415,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "9",
         label: "N9",
         kind: "junction",
-        x: 280,
-        y: 310,
-        demand: 130,
-        pressure: 42
+        x: 631,
+        y: 450,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "10",
         label: "N10",
         kind: "junction",
-        x: 280,
-        y: 420,
-        demand: 110,
-        pressure: 41
+        x: 593,
+        y: 450,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "11",
         label: "N11",
         kind: "junction",
-        x: 280,
-        y: 520,
-        demand: 90,
-        pressure: 39
+        x: 593,
+        y: 478,
+        demand: 0,
+        pressure: 0
     },
-    // Col 3
     {
         id: "12",
         label: "N12",
         kind: "junction",
-        x: 410,
-        y: 100,
-        demand: 120,
-        pressure: 43
+        x: 593,
+        y: 498,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "13",
         label: "N13",
         kind: "junction",
-        x: 410,
-        y: 200,
-        demand: 140,
-        pressure: 42
+        x: 542,
+        y: 498,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "14",
         label: "N14",
         kind: "junction",
-        x: 410,
-        y: 310,
-        demand: 100,
-        pressure: 40
+        x: 554,
+        y: 450,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "15",
         label: "N15",
         kind: "junction",
-        x: 410,
-        y: 420,
-        demand: 110,
-        pressure: 38
+        x: 505,
+        y: 450,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "16",
         label: "N16",
         kind: "junction",
-        x: 410,
-        y: 520,
-        demand: 150,
-        pressure: 36
+        x: 467,
+        y: 450,
+        demand: 0,
+        pressure: 0
     },
-    // Col 4
     {
         id: "17",
         label: "N17",
         kind: "junction",
-        x: 540,
-        y: 100,
-        demand: 80,
-        pressure: 39
+        x: 467,
+        y: 427,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "18",
         label: "N18",
         kind: "junction",
-        x: 540,
-        y: 200,
-        demand: 95,
-        pressure: 38
+        x: 468,
+        y: 407,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "19",
         label: "N19",
         kind: "junction",
-        x: 540,
-        y: 310,
-        demand: 120,
-        pressure: 36
+        x: 468,
+        y: 377,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "20",
         label: "N20",
         kind: "junction",
-        x: 540,
-        y: 420,
-        demand: 105,
-        pressure: 35
+        x: 414,
+        y: 348,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "21",
         label: "N21",
         kind: "junction",
-        x: 540,
-        y: 520,
-        demand: 90,
-        pressure: 33
+        x: 414,
+        y: 315,
+        demand: 0,
+        pressure: 0
     },
-    // Col 5
     {
         id: "22",
         label: "N22",
         kind: "junction",
-        x: 670,
-        y: 100,
-        demand: 110,
-        pressure: 35
+        x: 414,
+        y: 280,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "23",
         label: "N23",
         kind: "junction",
-        x: 670,
-        y: 200,
-        demand: 130,
-        pressure: 34
+        x: 368,
+        y: 348,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "24",
         label: "N24",
         kind: "junction",
-        x: 670,
-        y: 310,
-        demand: 100,
-        pressure: 32
+        x: 368,
+        y: 409,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "25",
         label: "N25",
         kind: "junction",
-        x: 670,
-        y: 420,
-        demand: 125,
-        pressure: 31
+        x: 366,
+        y: 450,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "26",
         label: "N26",
         kind: "junction",
-        x: 670,
-        y: 520,
-        demand: 140,
-        pressure: 29
+        x: 403,
+        y: 450,
+        demand: 0,
+        pressure: 0
     },
-    // Col 6
     {
         id: "27",
         label: "N27",
         kind: "junction",
-        x: 800,
-        y: 100,
-        demand: 85,
-        pressure: 31
+        x: 436,
+        y: 450,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "28",
         label: "N28",
         kind: "junction",
-        x: 800,
-        y: 200,
-        demand: 100,
-        pressure: 30
+        x: 322,
+        y: 348,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "29",
         label: "N29",
         kind: "junction",
-        x: 800,
-        y: 310,
-        demand: 115,
-        pressure: 28
+        x: 267,
+        y: 350,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "30",
         label: "N30",
         kind: "junction",
-        x: 800,
-        y: 420,
-        demand: 90,
-        pressure: 27
+        x: 267,
+        y: 395,
+        demand: 0,
+        pressure: 0
     },
     {
         id: "31",
         label: "N31",
         kind: "junction",
-        x: 800,
-        y: 520,
-        demand: 105,
-        pressure: 25
+        x: 267,
+        y: 450,
+        demand: 0,
+        pressure: 0
     },
-    // Tail
     {
         id: "32",
         label: "N32",
         kind: "junction",
-        x: 920,
-        y: 310,
-        demand: 150,
-        pressure: 22
+        x: 322,
+        y: 450,
+        demand: 0,
+        pressure: 0
+    },
+    {
+        id: "1",
+        label: "N1",
+        kind: "reservoir",
+        x: 470,
+        y: 274,
+        demand: 0,
+        pressure: 0
     }
 ];
 const EDGES = [
-    // Reservoir to network
     {
-        id: "P01",
+        id: "P1",
         source: "1",
-        target: "4",
-        lengthM: 100,
-        diameterMm: 350,
-        baseLeak: 0
-    },
-    // Vertical connections
-    {
-        id: "P02",
-        source: "4",
-        target: "3",
-        lengthM: 110,
-        diameterMm: 250,
-        baseLeak: 0
-    },
-    {
-        id: "P03",
-        source: "3",
         target: "2",
-        lengthM: 100,
-        diameterMm: 200,
+        lengthM: 105,
+        diameterMm: 1008,
         baseLeak: 0
     },
     {
-        id: "P04",
+        id: "P2",
+        source: "2",
+        target: "3",
+        lengthM: 1295,
+        diameterMm: 988,
+        baseLeak: 0
+    },
+    {
+        id: "P3",
+        source: "3",
+        target: "4",
+        lengthM: 908,
+        diameterMm: 1025,
+        baseLeak: 0
+    },
+    {
+        id: "P4",
         source: "4",
         target: "5",
-        lengthM: 110,
-        diameterMm: 250,
+        lengthM: 1114,
+        diameterMm: 1031,
         baseLeak: 0
     },
     {
-        id: "P05",
+        id: "P5",
         source: "5",
         target: "6",
-        lengthM: 100,
-        diameterMm: 200,
+        lengthM: 1453,
+        diameterMm: 1052,
         baseLeak: 0
     },
     {
-        id: "P09",
+        id: "P6",
+        source: "6",
+        target: "7",
+        lengthM: 439,
+        diameterMm: 1007,
+        baseLeak: 0
+    },
+    {
+        id: "P7",
         source: "7",
         target: "8",
-        lengthM: 100,
-        diameterMm: 200,
+        lengthM: 872,
+        diameterMm: 1064,
+        baseLeak: 0
+    },
+    {
+        id: "P8",
+        source: "8",
+        target: "9",
+        lengthM: 826,
+        diameterMm: 1010,
+        baseLeak: 0
+    },
+    {
+        id: "P9",
+        source: "9",
+        target: "10",
+        lengthM: 790,
+        diameterMm: 993,
         baseLeak: 0
     },
     {
         id: "P10",
-        source: "8",
-        target: "9",
-        lengthM: 110,
-        diameterMm: 250,
+        source: "10",
+        target: "11",
+        lengthM: 908,
+        diameterMm: 759,
         baseLeak: 0
     },
     {
         id: "P11",
-        source: "9",
-        target: "10",
-        lengthM: 110,
-        diameterMm: 250,
+        source: "11",
+        target: "12",
+        lengthM: 1193,
+        diameterMm: 792,
         baseLeak: 0
     },
     {
         id: "P12",
-        source: "10",
-        target: "11",
-        lengthM: 100,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    {
-        id: "P16",
         source: "12",
         target: "13",
-        lengthM: 100,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    {
-        id: "P17",
-        source: "13",
-        target: "14",
-        lengthM: 110,
-        diameterMm: 250,
-        baseLeak: 0
-    },
-    {
-        id: "P18",
-        source: "14",
-        target: "15",
-        lengthM: 110,
-        diameterMm: 250,
-        baseLeak: 0
-    },
-    {
-        id: "P19",
-        source: "15",
-        target: "16",
-        lengthM: 100,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    {
-        id: "P23",
-        source: "17",
-        target: "18",
-        lengthM: 100,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    {
-        id: "P24",
-        source: "18",
-        target: "19",
-        lengthM: 110,
-        diameterMm: 250,
-        baseLeak: 0
-    },
-    {
-        id: "P25",
-        source: "19",
-        target: "20",
-        lengthM: 110,
-        diameterMm: 250,
-        baseLeak: 0
-    },
-    {
-        id: "P26",
-        source: "20",
-        target: "21",
-        lengthM: 100,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    {
-        id: "P30",
-        source: "22",
-        target: "23",
-        lengthM: 100,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    {
-        id: "P31",
-        source: "23",
-        target: "24",
-        lengthM: 110,
-        diameterMm: 250,
-        baseLeak: 0
-    },
-    {
-        id: "P32",
-        source: "24",
-        target: "25",
-        lengthM: 110,
-        diameterMm: 250,
-        baseLeak: 0
-    },
-    {
-        id: "P33",
-        source: "25",
-        target: "26",
-        lengthM: 100,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    {
-        id: "P37",
-        source: "27",
-        target: "28",
-        lengthM: 100,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    {
-        id: "P38",
-        source: "28",
-        target: "29",
-        lengthM: 110,
-        diameterMm: 250,
-        baseLeak: 0
-    },
-    {
-        id: "P39",
-        source: "29",
-        target: "30",
-        lengthM: 110,
-        diameterMm: 250,
-        baseLeak: 0
-    },
-    {
-        id: "P40",
-        source: "30",
-        target: "31",
-        lengthM: 100,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    // Horizontal Connections
-    {
-        id: "P06",
-        source: "2",
-        target: "7",
-        lengthM: 130,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    {
-        id: "P07",
-        source: "4",
-        target: "9",
-        lengthM: 130,
-        diameterMm: 300,
-        baseLeak: 0
-    },
-    {
-        id: "P08",
-        source: "6",
-        target: "11",
-        lengthM: 130,
-        diameterMm: 200,
+        lengthM: 3531,
+        diameterMm: 581,
         baseLeak: 0
     },
     {
         id: "P13",
-        source: "7",
-        target: "12",
-        lengthM: 130,
-        diameterMm: 200,
+        source: "10",
+        target: "14",
+        lengthM: 821,
+        diameterMm: 398,
         baseLeak: 0
     },
     {
         id: "P14",
-        source: "9",
-        target: "14",
-        lengthM: 130,
-        diameterMm: 300,
+        source: "14",
+        target: "15",
+        lengthM: 504,
+        diameterMm: 423,
         baseLeak: 0
     },
     {
         id: "P15",
-        source: "11",
+        source: "15",
         target: "16",
-        lengthM: 130,
-        diameterMm: 200,
+        lengthM: 538,
+        diameterMm: 296,
+        baseLeak: 0
+    },
+    {
+        id: "P16",
+        source: "17",
+        target: "16",
+        lengthM: 2845,
+        diameterMm: 407,
+        baseLeak: 0
+    },
+    {
+        id: "P17",
+        source: "17",
+        target: "18",
+        lengthM: 1673,
+        diameterMm: 516,
+        baseLeak: 0
+    },
+    {
+        id: "P18",
+        source: "18",
+        target: "19",
+        lengthM: 784,
+        diameterMm: 611,
+        baseLeak: 0
+    },
+    {
+        id: "P19",
+        source: "19",
+        target: "3",
+        lengthM: 393,
+        diameterMm: 607,
         baseLeak: 0
     },
     {
         id: "P20",
-        source: "12",
-        target: "17",
-        lengthM: 130,
-        diameterMm: 200,
+        source: "3",
+        target: "20",
+        lengthM: 2187,
+        diameterMm: 1047,
         baseLeak: 0
     },
     {
         id: "P21",
-        source: "14",
-        target: "19",
-        lengthM: 130,
-        diameterMm: 300,
+        source: "20",
+        target: "21",
+        lengthM: 1519,
+        diameterMm: 532,
         baseLeak: 0
     },
     {
         id: "P22",
-        source: "16",
-        target: "21",
-        lengthM: 130,
-        diameterMm: 200,
+        source: "21",
+        target: "22",
+        lengthM: 484,
+        diameterMm: 312,
+        baseLeak: 0
+    },
+    {
+        id: "P23",
+        source: "20",
+        target: "23",
+        lengthM: 2722,
+        diameterMm: 1052,
+        baseLeak: 0
+    },
+    {
+        id: "P24",
+        source: "23",
+        target: "24",
+        lengthM: 1198,
+        diameterMm: 774,
+        baseLeak: 0
+    },
+    {
+        id: "P25",
+        source: "24",
+        target: "25",
+        lengthM: 1255,
+        diameterMm: 760,
+        baseLeak: 0
+    },
+    {
+        id: "P26",
+        source: "26",
+        target: "25",
+        lengthM: 820,
+        diameterMm: 492,
         baseLeak: 0
     },
     {
         id: "P27",
-        source: "17",
-        target: "22",
-        lengthM: 130,
-        diameterMm: 200,
+        source: "27",
+        target: "26",
+        lengthM: 310,
+        diameterMm: 318,
         baseLeak: 0
     },
     {
         id: "P28",
-        source: "19",
-        target: "24",
-        lengthM: 130,
-        diameterMm: 300,
+        source: "16",
+        target: "27",
+        lengthM: 724,
+        diameterMm: 313,
         baseLeak: 0
     },
     {
         id: "P29",
-        source: "21",
-        target: "26",
-        lengthM: 130,
-        diameterMm: 200,
+        source: "23",
+        target: "28",
+        lengthM: 1491,
+        diameterMm: 422,
+        baseLeak: 0
+    },
+    {
+        id: "P30",
+        source: "28",
+        target: "29",
+        lengthM: 2032,
+        diameterMm: 412,
+        baseLeak: 0
+    },
+    {
+        id: "P31",
+        source: "29",
+        target: "30",
+        lengthM: 1624,
+        diameterMm: 295,
+        baseLeak: 0
+    },
+    {
+        id: "P32",
+        source: "30",
+        target: "31",
+        lengthM: 156,
+        diameterMm: 317,
+        baseLeak: 0
+    },
+    {
+        id: "P33",
+        source: "32",
+        target: "31",
+        lengthM: 858,
+        diameterMm: 423,
         baseLeak: 0
     },
     {
         id: "P34",
-        source: "22",
-        target: "27",
-        lengthM: 130,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    {
-        id: "P35",
-        source: "24",
-        target: "29",
-        lengthM: 130,
-        diameterMm: 300,
-        baseLeak: 0
-    },
-    {
-        id: "P36",
-        source: "26",
-        target: "31",
-        lengthM: 130,
-        diameterMm: 200,
-        baseLeak: 0
-    },
-    // Tail connection
-    {
-        id: "P41",
-        source: "29",
+        source: "25",
         target: "32",
-        lengthM: 120,
-        diameterMm: 250,
+        lengthM: 911,
+        diameterMm: 492,
         baseLeak: 0
     }
 ];
@@ -1546,7 +1481,40 @@ const NODE_BY_ID = Object.fromEntries(_c1 = NODES.map(_c = (n)=>[
         n
     ]));
 _c2 = NODE_BY_ID;
-// Dynamically generate 31 data points (1 to 31 full scale) for the graph
+const OPTIMAL_PLACEMENT_ORDER = [
+    "13",
+    "31",
+    "22",
+    "12",
+    "30",
+    "9",
+    "27",
+    "6",
+    "17",
+    "25",
+    "32",
+    "29",
+    "15",
+    "21",
+    "3",
+    "20",
+    "28",
+    "24",
+    "10",
+    "18",
+    "14",
+    "16",
+    "26",
+    "8",
+    "4",
+    "5",
+    "7",
+    "11",
+    "19",
+    "2",
+    "23"
+];
+// Dynamically generate 31 data points for the ROI curve
 const paretoData = Array.from({
     length: 31
 }, (_, i)=>{
@@ -1569,15 +1537,111 @@ const paretoData = Array.from({
     };
 });
 const pathD = `M ${paretoData.map((p)=>`${p.x} ${p.y}`).join(' L ')}`;
+// Map Client mouse coordinates perfectly to SVG viewBox coordinates
+const SVG_VIEWBOX = {
+    x: 240,
+    y: 250,
+    w: 420,
+    h: 280
+};
 function LiveDemo() {
     _s();
     const [sensors, setSensors] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('12');
-    const currentData = paretoData.find((d)=>d.sensors.toString() === sensors) || paretoData[11];
+    const [sensorTokens, setSensorTokens] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [isOptimized, setIsOptimized] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    // Custom Drag State
+    const [dragState, setDragState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const numSensors = parseInt(sensors, 10);
-    // Pick the first `numSensors` nodes to simulate optimal placement
-    // Now correctly scales up to 31 since we have 32 nodes mapped out.
-    const activeSensors = new Set(NODES.slice(1, Math.min(numSensors + 1, NODES.length)).map((n)=>n.id) // Skipping index 0 (reservoir)
-    );
+    const currentData = paretoData.find((d)=>d.sensors.toString() === sensors) || paretoData[11];
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LiveDemo.useEffect": ()=>{
+            const initialTargetNodes = OPTIMAL_PLACEMENT_ORDER.slice(0, numSensors);
+            const newTokens = initialTargetNodes.map({
+                "LiveDemo.useEffect.newTokens": (nodeId, idx)=>({
+                        sensorIndex: idx,
+                        nodeId
+                    })
+            }["LiveDemo.useEffect.newTokens"]);
+            setSensorTokens(newTokens);
+            setIsOptimized(true);
+        }
+    }["LiveDemo.useEffect"], [
+        numSensors
+    ]);
+    const handleRunAnalysis = ()=>{
+        const optimalNodes = OPTIMAL_PLACEMENT_ORDER.slice(0, numSensors);
+        setSensorTokens((prev)=>prev.map((token, idx)=>({
+                    ...token,
+                    nodeId: optimalNodes[idx] || token.nodeId
+                })));
+        setIsOptimized(true);
+    };
+    // --- CUSTOM SVG DRAG LOGIC ---
+    const handlePointerDown = (e, tokenIndex, startX, startY)=>{
+        e.stopPropagation();
+        e.currentTarget.setPointerCapture(e.pointerId);
+        setDragState({
+            tokenIndex,
+            x: startX,
+            y: startY
+        });
+    };
+    const handlePointerMove = (e)=>{
+        if (!dragState) return;
+        // Convert mouse pixels to SVG viewBox coordinates
+        const svgElement = e.currentTarget;
+        const rect = svgElement.getBoundingClientRect();
+        const scaleX = SVG_VIEWBOX.w / rect.width;
+        const scaleY = SVG_VIEWBOX.h / rect.height;
+        const clientX = e.clientX - rect.left;
+        const clientY = e.clientY - rect.top;
+        const svgX = SVG_VIEWBOX.x + clientX * scaleX;
+        const svgY = SVG_VIEWBOX.y + clientY * scaleY;
+        setDragState({
+            ...dragState,
+            x: svgX,
+            y: svgY
+        });
+    };
+    const handlePointerUp = (e)=>{
+        if (!dragState) return;
+        // Find the closest valid node to snap to
+        let closestNode = null;
+        let minDistance = 20; // Maximum snapping radius in SVG units
+        for (const node of NODES){
+            if (node.kind === 'reservoir') continue; // Note: 'continue' instead of 'return' here
+            const dist = Math.sqrt(Math.pow(node.x - dragState.x, 2) + Math.pow(node.y - dragState.y, 2));
+            if (dist < minDistance) {
+                minDistance = dist;
+                closestNode = node;
+            }
+        }
+        if (closestNode) {
+            const targetNodeId = closestNode.id;
+            const existingTokenOnTarget = sensorTokens.find((t)=>t.nodeId === targetNodeId);
+            setSensorTokens((prev)=>{
+                return prev.map((token)=>{
+                    if (token.sensorIndex === dragState.tokenIndex) {
+                        return {
+                            ...token,
+                            nodeId: targetNodeId
+                        };
+                    }
+                    // Swap if we drop onto an occupied node
+                    if (existingTokenOnTarget && token.sensorIndex === existingTokenOnTarget.sensorIndex) {
+                        const sourceNodeId = prev.find((t)=>t.sensorIndex === dragState.tokenIndex)?.nodeId;
+                        return {
+                            ...token,
+                            nodeId: sourceNodeId || token.nodeId
+                        };
+                    }
+                    return token;
+                });
+            });
+            setIsOptimized(false);
+        }
+        setDragState(null);
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
         className: "relative w-full min-h-screen pb-[15vh] font-montserrat flex flex-col pt-[10vh] border-t border-[#1a1a1a]",
         style: {
@@ -1590,7 +1654,7 @@ function LiveDemo() {
                 className: "absolute inset-0 bg-black/40 z-0 pointer-events-none"
             }, void 0, false, {
                 fileName: "[project]/src/components/LiveDemo.tsx",
-                lineNumber: 162,
+                lineNumber: 247,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1604,7 +1668,7 @@ function LiveDemo() {
                                 children: "LeakSense In Action"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 169,
+                                lineNumber: 253,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1618,7 +1682,7 @@ function LiveDemo() {
                                                 children: "Enter number of Sensors"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 175,
+                                                lineNumber: 259,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1639,12 +1703,12 @@ function LiveDemo() {
                                                                 ]
                                                             }, d.sensors, true, {
                                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                                lineNumber: 185,
+                                                                lineNumber: 269,
                                                                 columnNumber: 21
                                                             }, this))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 179,
+                                                        lineNumber: 263,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1662,29 +1726,29 @@ function LiveDemo() {
                                                                 points: "6 9 12 15 18 9"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                                lineNumber: 192,
+                                                                lineNumber: 276,
                                                                 columnNumber: 21
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                                            lineNumber: 191,
+                                                            lineNumber: 275,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 190,
+                                                        lineNumber: 274,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 178,
+                                                lineNumber: 262,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 174,
+                                        lineNumber: 258,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1695,7 +1759,7 @@ function LiveDemo() {
                                                 children: "Upload your data"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 199,
+                                                lineNumber: 283,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1719,41 +1783,42 @@ function LiveDemo() {
                                                             y2: "5"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                                            lineNumber: 207,
+                                                            lineNumber: 291,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("polyline", {
                                                             points: "5 12 12 5 19 12"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                                            lineNumber: 208,
+                                                            lineNumber: 292,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 206,
+                                                    lineNumber: 290,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 202,
+                                                lineNumber: 286,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 198,
+                                        lineNumber: 282,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 173,
+                                lineNumber: 257,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                className: "bg-[#F02B11] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#d0250f] transition-colors font-[500] text-sm mt-2",
+                                onClick: handleRunAnalysis,
+                                className: "bg-[#F02B11] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#d0250f] transition-all font-[500] text-sm mt-2 shadow-lg cursor-pointer active:scale-95",
                                 children: [
                                     "Run Analysis",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
@@ -1773,39 +1838,45 @@ function LiveDemo() {
                                                 y2: "12"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 217,
+                                                lineNumber: 304,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("polyline", {
                                                 points: "12 5 19 12 12 19"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 218,
+                                                lineNumber: 305,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 216,
+                                        lineNumber: 303,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 214,
+                                lineNumber: 298,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 168,
+                        lineNumber: 252,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "w-[50%] pr-16 lg:pr-25 pt-4 pb-8 flex items-stretch relative",
+                        className: "w-[50%] pr-16 lg:pr-25 flex items-center justify-center relative",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
-                            viewBox: "0 0 1000 620",
-                            className: "w-full h-full overflow-visible",
+                            viewBox: `${SVG_VIEWBOX.x} ${SVG_VIEWBOX.y} ${SVG_VIEWBOX.w} ${SVG_VIEWBOX.h}`,
+                            className: "w-full h-full select-none",
+                            style: {
+                                touchAction: 'none'
+                            },
+                            onPointerMove: handlePointerMove,
+                            onPointerUp: handlePointerUp,
+                            onPointerLeave: handlePointerUp,
                             children: [
                                 EDGES.map((edge)=>{
                                     const sourceNode = NODE_BY_ID[edge.source];
@@ -1816,82 +1887,124 @@ function LiveDemo() {
                                         y1: sourceNode.y,
                                         x2: targetNode.x,
                                         y2: targetNode.y,
-                                        stroke: "#333",
-                                        strokeWidth: edge.diameterMm / 40,
-                                        strokeLinecap: "round",
-                                        className: "transition-all duration-500"
+                                        stroke: "#444",
+                                        strokeWidth: Math.max(1, edge.diameterMm / 250),
+                                        strokeLinecap: "round"
                                     }, edge.id, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 234,
+                                        lineNumber: 327,
                                         columnNumber: 17
                                     }, this);
                                 }),
                                 NODES.map((node)=>{
-                                    const isSensor = activeSensors.has(node.id);
-                                    const isSpecial = node.kind === 'reservoir';
+                                    const isReservoir = node.kind === 'reservoir';
                                     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("g", {
-                                        className: "transition-all duration-500",
                                         children: [
-                                            isSensor && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
-                                                cx: node.x,
-                                                cy: node.y,
-                                                r: 24,
-                                                fill: "#F02B11",
-                                                opacity: "0.2",
-                                                className: "animate-pulse"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 257,
-                                                columnNumber: 21
-                                            }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
                                                 cx: node.x,
                                                 cy: node.y,
-                                                r: isSpecial ? 12 : isSensor ? 10 : 6,
-                                                fill: isSensor ? "#F02B11" : isSpecial ? "#4A90E2" : "#666",
-                                                stroke: isSensor ? "#FFF" : "none",
-                                                strokeWidth: isSensor ? 2 : 0
+                                                r: isReservoir ? 6 : 2.5,
+                                                fill: isReservoir ? '#4A90E2' : '#777',
+                                                className: "pointer-events-none"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 268,
+                                                lineNumber: 346,
                                                 columnNumber: 19
                                             }, this),
-                                            isSpecial && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                                            isReservoir && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
                                                 x: node.x,
-                                                y: node.y - 20,
+                                                y: node.y - 12,
                                                 fill: "#4A90E2",
-                                                fontSize: "14",
-                                                fontFamily: "sans-serif",
+                                                fontSize: "9",
                                                 fontWeight: "bold",
                                                 textAnchor: "middle",
+                                                className: "pointer-events-none",
                                                 children: node.label
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 279,
+                                                lineNumber: 355,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, node.id, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 254,
+                                        lineNumber: 344,
+                                        columnNumber: 17
+                                    }, this);
+                                }),
+                                sensorTokens.map((token)=>{
+                                    const node = NODE_BY_ID[token.nodeId];
+                                    if (!node) return null;
+                                    const isDragging = dragState?.tokenIndex === token.sensorIndex;
+                                    // If dragging, follow mouse exactly. If not, map to node coordinates.
+                                    const currentX = isDragging ? dragState.x : node.x;
+                                    const currentY = isDragging ? dragState.y : node.y;
+                                    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("g", {
+                                        onPointerDown: (e)=>handlePointerDown(e, token.sensorIndex, currentX, currentY),
+                                        className: `${isDragging ? 'cursor-grabbing' : 'cursor-grab'} z-50`,
+                                        style: {
+                                            // Transition is disabled while dragging for instant mouse follow!
+                                            transition: isDragging ? 'none' : 'transform 800ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+                                            transform: `translate(${currentX}px, ${currentY}px)`
+                                        },
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                                cx: 0,
+                                                cy: 0,
+                                                r: 11,
+                                                fill: "#F02B11",
+                                                opacity: isDragging ? "0.6" : "0.3",
+                                                className: `${isDragging ? '' : 'animate-pulse'} pointer-events-none transition-opacity`
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                lineNumber: 394,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                                cx: 0,
+                                                cy: 0,
+                                                r: 15,
+                                                fill: "transparent"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                lineNumber: 404,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                                cx: 0,
+                                                cy: 0,
+                                                r: 4.5,
+                                                fill: "#F02B11",
+                                                stroke: "#FFF",
+                                                strokeWidth: 1,
+                                                className: "pointer-events-none shadow-md"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                lineNumber: 407,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, `sensor-token-${token.sensorIndex}`, true, {
+                                        fileName: "[project]/src/components/LiveDemo.tsx",
+                                        lineNumber: 383,
                                         columnNumber: 17
                                     }, this);
                                 })
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/LiveDemo.tsx",
-                            lineNumber: 225,
+                            lineNumber: 312,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 224,
+                        lineNumber: 311,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LiveDemo.tsx",
-                lineNumber: 165,
+                lineNumber: 250,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1908,7 +2021,7 @@ function LiveDemo() {
                                         children: "ROI Frontier"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 306,
+                                        lineNumber: 428,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1916,13 +2029,13 @@ function LiveDemo() {
                                         children: "Accuracy vs. Cost"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 307,
+                                        lineNumber: 429,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 305,
+                                lineNumber: 427,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1941,7 +2054,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 312,
+                                                lineNumber: 434,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -1955,7 +2068,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 313,
+                                                lineNumber: 435,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -1969,7 +2082,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 314,
+                                                lineNumber: 436,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -1983,7 +2096,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 315,
+                                                lineNumber: 437,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -1995,13 +2108,13 @@ function LiveDemo() {
                                                 className: "opacity-80"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 317,
+                                                lineNumber: 439,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 311,
+                                        lineNumber: 433,
                                         columnNumber: 13
                                     }, this),
                                     paretoData.map((point)=>{
@@ -2018,7 +2131,7 @@ function LiveDemo() {
                                                     className: `rounded-full transition-all duration-300 ${isActive ? 'w-[8px] h-[8px] bg-[#F02B11] shadow-[0_0_12px_#F02B11]' : 'w-[4px] h-[4px] bg-[#555] group-hover:bg-gray-300'}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 336,
+                                                    lineNumber: 451,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2026,26 +2139,26 @@ function LiveDemo() {
                                                     children: point.sensors
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 337,
+                                                    lineNumber: 456,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, point.sensors, true, {
                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                            lineNumber: 330,
+                                            lineNumber: 445,
                                             columnNumber: 17
                                         }, this);
                                     })
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 310,
+                                lineNumber: 432,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 303,
+                        lineNumber: 426,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2058,62 +2171,62 @@ function LiveDemo() {
                                     children: "Accuracy Score"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                    lineNumber: 349,
+                                    lineNumber: 472,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 348,
+                                lineNumber: 471,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "w-full flex-1 mt-6 flex flex-col justify-center",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                        className: "text-white text-7xl lg:text-[3.5rem] font-[600] tracking-tight leading-none mb-2 transition-all",
+                                        className: "text-white text-7xl lg:text-[6.5rem] font-[700] tracking-tight leading-none mb-2 transition-all",
                                         children: [
                                             currentData.accuracy,
                                             "%"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 353,
+                                        lineNumber: 476,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "text-gray-400 text-sm font-[400]",
-                                        children: sensors === '5' ? 'Optimal sensor placement' : 'Custom sensor placement'
+                                        children: isOptimized ? 'Optimal sensor placement' : 'Custom sensor placement (Click "Run Analysis" to optimize)'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 356,
+                                        lineNumber: 479,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 352,
+                                lineNumber: 475,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 347,
+                        lineNumber: 470,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LiveDemo.tsx",
-                lineNumber: 300,
+                lineNumber: 424,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LiveDemo.tsx",
-        lineNumber: 154,
+        lineNumber: 239,
         columnNumber: 5
     }, this);
 }
-_s(LiveDemo, "CuiPg2iwslOOR4gMQ540LK5TUAs=");
+_s(LiveDemo, "+iLuEF+rS0hYzPtxjaLHEnrvLH8=");
 _c3 = LiveDemo;
 var _c, _c1, _c2, _c3;
 __turbopack_context__.k.register(_c, "NODE_BY_ID$Object.fromEntries$NODES.map");
