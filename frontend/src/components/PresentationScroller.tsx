@@ -34,11 +34,10 @@ const slides = [
   }
 ];
 
-// Reverted purely to your font-pixel class, preserving the capitalize toggle
 function CursiveWord({ word, capitalize = true }: { word: string, capitalize?: boolean }) {
   const displayWord = capitalize ? word.charAt(0).toUpperCase() + word.slice(1) : word;
   return (
-    <span className="font-pixel font-normal tracking-normal text-gray-900">
+    <span className="font-pixel font-normal tracking-normal text-white">
       {displayWord}
     </span>
   );
@@ -62,11 +61,12 @@ export default function PresentationScroller() {
   const [currentImage, setCurrentImage] = useState(slides[0].imageFirstHalf);
 
   return (
-    <div className="relative w-full bg-[#f4f4f0] font-montserrat">
+    // Changed to a standard Flex row layout
+    <div className="relative w-full bg-black font-montserrat flex flex-row">
       
       {/* THE STICKY VIEWFINDER (Left Pane) */}
-      <div className="sticky top-0 left-0 w-full h-0 z-10 pointer-events-none">
-        <div className="absolute top-0 left-0 w-[35%] lg:w-[40%] h-screen overflow-hidden bg-[#1a1a1a]">
+      <div className="w-[35%] lg:w-[40%] relative z-10">
+        <div className="sticky top-0 w-full h-screen overflow-hidden bg-black">
           <AnimatePresence mode="popLayout">
             <motion.img
               key={currentImage}
@@ -83,14 +83,15 @@ export default function PresentationScroller() {
       </div>
 
       {/* THE SCROLLING TRACK (Right Pane) */}
-      <div className="w-full flex flex-col">
+      <div className="w-[65%] lg:w-[60%] flex flex-col">
         {slides.map((slide) => (
           <section 
             key={slide.id} 
-            className="relative w-full min-h-screen flex flex-row"
+            className="relative w-full min-h-screen flex flex-col justify-center px-16 lg:px-32 py-20"
           >
             
             {/* INVISIBLE SCROLL TRIGGERS */}
+            {/* Positioned absolute within the specific slide section */}
             <div className="absolute inset-0 w-full h-full flex flex-col pointer-events-none z-0">
               <motion.div 
                 className="w-full h-1/2"
@@ -104,27 +105,25 @@ export default function PresentationScroller() {
               />
             </div>
 
-            <div className="w-[35%] lg:w-[40%] bg-transparent z-10" />
-
-            <div className="w-[65%] lg:w-[60%] flex flex-col justify-center px-16 lg:px-32 py-20 z-10">
-              
-              <h2 className="text-[65px] font-[700] text-black mb-4 leading-[1.2]">
+            {/* TEXT CONTENT */}
+            <div className="relative z-10">
+              <h2 className="text-[65px] font-[700] text-[#F02B11] mb-4 leading-[1.2]">
                 {slide.id}
               </h2>
               
-              <h1 className="text-[65px] font-[700] text-black tracking-tight mb-8 leading-[1.2] flex flex-wrap items-baseline gap-x-4">
+              <h1 className="text-[65px] font-[700] text-white tracking-tight mb-8 leading-[1.2] flex flex-wrap items-baseline gap-x-4">
                 {slide.title} <CursiveWord word={slide.cursiveWord} capitalize={true} />
               </h1>
               
-              <p className="text-xl font-[400] text-gray-800 leading-relaxed max-w-2xl mb-12">
+              <p className="text-xl font-[400] text-gray-200 leading-relaxed max-w-2xl mb-12">
                 {renderTextWithCursive(slide.body, slide.cursiveWord)}
               </p>
               
-              <p className="text-xs font-[400] text-gray-500 uppercase tracking-widest max-w-xl leading-relaxed">
-                <span className="font-[700] text-gray-900">EG :</span> {renderTextWithCursive(slide.eg, slide.cursiveWord)}
+              <p className="text-xs font-[400] text-gray-400 uppercase tracking-widest max-w-xl leading-relaxed">
+                <span className="font-[700] text-white">EG :</span> {renderTextWithCursive(slide.eg, slide.cursiveWord)}
               </p>
-              
             </div>
+            
           </section>
         ))}
       </div>
