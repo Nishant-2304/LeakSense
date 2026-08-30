@@ -140,7 +140,7 @@ export default function BeyondPrototype() {
               {/* Added shrink-0 here so the empty div on slides 2 & 3 holds its 50% width */}
               <div className="w-[50%] shrink-0 flex flex-col">
                 {app.id === 1 && (
-                  <h1 className="text-white text-5xl lg:text-7xl font-[600] leading-none flex flex-col w-full">
+                  <h1 className="text-white text-4xl lg:text-6xl font-[500] leading-none flex flex-col w-full">
                     <span className="font-pixel font-normal tracking-normal ml-[35%] lg:ml-[50%] -mb-4 z-10">
                       Where
                     </span>
