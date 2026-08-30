@@ -350,11 +350,7 @@ export default function LiveDemo() {
           </div>
 
           <div className="w-full flex-1 mt-6 flex flex-col justify-center">
-<<<<<<< HEAD
-            <p className="text-white text-7xl lg:text-[6.5rem] font-[700] tracking-tight leading-none mb-2 transition-all">
-=======
             <p className="text-white text-7xl lg:text-[3.5rem] font-[600] tracking-tight leading-none mb-2 transition-all">
->>>>>>> c56bb764138f24bf0a35efe1648666ae6229f6a1
               {currentData.accuracy}%
             </p>
             <p className="text-gray-400 text-sm font-[400]">
