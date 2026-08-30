@@ -130,6 +130,30 @@ type SensorToken = {
   nodeId: string;
 };
 
+type ApiNetworkNode = {
+  node_id: string;
+  x: number;
+  y: number;
+};
+
+type ApiNetworkLink = {
+  link_id: string;
+  start_node_id: string;
+  end_node_id: string;
+};
+
+type PredictResponse = {
+  predicted_node: string;
+  predicted_qL: number;
+  confidence: number;
+  top_predictions: Array<{
+    node_id: string;
+    probability: number;
+  }>;
+};
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
+
 // Map Client mouse coordinates perfectly to SVG viewBox coordinates
 const SVG_VIEWBOX = { x: 240, y: 250, w: 420, h: 280 };
 
@@ -137,6 +161,10 @@ export default function LiveDemo() {
   const [sensors, setSensors] = useState<string>('12');
   const [sensorTokens, setSensorTokens] = useState<SensorToken[]>([]);
   const [isOptimized, setIsOptimized] = useState<boolean>(true);
+  const [graphNodes, setGraphNodes] = useState<JunctionNode[]>(NODES);
+  const [graphEdges, setGraphEdges] = useState<PipeEdge[]>(EDGES);
+  const [prediction, setPrediction] = useState<PredictResponse | null>(null);
+  const [apiStatus, setApiStatus] = useState<string>('');
   
   // Custom Drag State
   const [dragState, setDragState] = useState<{
@@ -146,27 +174,154 @@ export default function LiveDemo() {
   } | null>(null);
 
   const numSensors = parseInt(sensors, 10);
-  const currentData = paretoData.find((d) => d.sensors.toString() === sensors) || paretoData[11];
+  const graphNodeById: Record<string, JunctionNode> = Object.fromEntries(
+    graphNodes.map((n) => [n.id, n])
+  );
+  const predictionLabel = prediction
+    ? `Predicted N${prediction.predicted_node} | qL ${prediction.predicted_qL.toFixed(2)} | ${(prediction.confidence * 100).toFixed(1)}% confidence | Top: ${prediction.top_predictions
+        .slice(0, 3)
+        .map((item) => `N${item.node_id} ${(item.probability * 100).toFixed(1)}%`)
+        .join(', ')}`
+    : null;
 
-  useEffect(() => {
-    const initialTargetNodes = OPTIMAL_PLACEMENT_ORDER.slice(0, numSensors);
-    const newTokens: SensorToken[] = initialTargetNodes.map((nodeId, idx) => ({
+  const applyOptimizedSensors = (nodeIds: string[]) => {
+    const newTokens: SensorToken[] = nodeIds.slice(0, numSensors).map((nodeId, idx) => ({
       sensorIndex: idx,
       nodeId,
     }));
     setSensorTokens(newTokens);
     setIsOptimized(true);
+  };
+
+  const optimizeSensors = async (budget: number) => {
+    const response = await fetch(`${API_BASE}/optimize-sensors`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sensor_budget: budget }),
+    });
+    if (!response.ok) {
+      throw new Error(`Sensor optimization failed (${response.status})`);
+    }
+    const data = await response.json();
+    return data.selected_sensors.map((sensor: { node_id: string }) => sensor.node_id);
+  };
+
+  const runPrediction = async (tokens: SensorToken[]) => {
+    const response = await fetch(`${API_BASE}/predict`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sensors: tokens.map((token) => ({
+          node_id: token.nodeId,
+          pressure_delta: graphNodeById[token.nodeId]?.pressure ?? 0,
+        })),
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`Prediction failed (${response.status})`);
+    }
+    const data: PredictResponse = await response.json();
+    setPrediction(data);
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadNetwork = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/network`);
+        if (!response.ok) {
+          throw new Error(`Network load failed (${response.status})`);
+        }
+        const data = await response.json();
+        const nodes = data.nodes as ApiNetworkNode[];
+        const links = data.links as ApiNetworkLink[];
+
+        const minX = Math.min(...nodes.map((node) => node.x));
+        const maxX = Math.max(...nodes.map((node) => node.x));
+        const minY = Math.min(...nodes.map((node) => node.y));
+        const maxY = Math.max(...nodes.map((node) => node.y));
+        const padding = 28;
+        const scaleX = (SVG_VIEWBOX.w - padding * 2) / (maxX - minX);
+        const scaleY = (SVG_VIEWBOX.h - padding * 2) / (maxY - minY);
+
+        if (cancelled) return;
+
+        setGraphNodes(
+          nodes.map((node) => ({
+            id: node.node_id,
+            label: `N${node.node_id}`,
+            kind: node.node_id === '1' ? 'reservoir' : 'junction',
+            x: SVG_VIEWBOX.x + padding + (node.x - minX) * scaleX,
+            y: SVG_VIEWBOX.y + SVG_VIEWBOX.h - padding - (node.y - minY) * scaleY,
+            demand: 0,
+            pressure: 0,
+          }))
+        );
+        setGraphEdges(
+          links.map((link) => ({
+            id: link.link_id,
+            source: link.start_node_id,
+            target: link.end_node_id,
+            lengthM: 250,
+            diameterMm: 500,
+            baseLeak: 0,
+          }))
+        );
+        setApiStatus('');
+      } catch (error) {
+        if (!cancelled) {
+          setApiStatus(error instanceof Error ? error.message : 'Network load failed');
+        }
+      }
+    };
+
+    loadNetwork();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadOptimizedSensors = async () => {
+      try {
+        const optimizedNodes = await optimizeSensors(numSensors);
+        if (!cancelled) {
+          applyOptimizedSensors(optimizedNodes);
+          setApiStatus('');
+        }
+      } catch (error) {
+        if (!cancelled) {
+          applyOptimizedSensors(OPTIMAL_PLACEMENT_ORDER.slice(0, numSensors));
+          setApiStatus(error instanceof Error ? error.message : 'Sensor optimization failed');
+        }
+      }
+    };
+
+    loadOptimizedSensors();
+
+    return () => {
+      cancelled = true;
+    };
   }, [numSensors]);
 
-  const handleRunAnalysis = () => {
-    const optimalNodes = OPTIMAL_PLACEMENT_ORDER.slice(0, numSensors);
-    setSensorTokens((prev) =>
-      prev.map((token, idx) => ({
-        ...token,
-        nodeId: optimalNodes[idx] || token.nodeId,
-      }))
-    );
-    setIsOptimized(true);
+  const handleRunAnalysis = async () => {
+    try {
+      const optimalNodes = await optimizeSensors(numSensors);
+      const nextTokens = optimalNodes.slice(0, numSensors).map((nodeId: string, idx: number) => ({
+        sensorIndex: idx,
+        nodeId,
+      }));
+      setSensorTokens(nextTokens);
+      setIsOptimized(true);
+      setApiStatus('');
+      await runPrediction(nextTokens);
+    } catch (error) {
+      setApiStatus(error instanceof Error ? error.message : 'Analysis failed');
+    }
   };
 
   // --- CUSTOM SVG DRAG LOGIC ---
@@ -202,7 +357,7 @@ export default function LiveDemo() {
     let closestNode: JunctionNode | null = null;
     let minDistance = 20; // Maximum snapping radius in SVG units
 
-    for (const node of NODES) {
+    for (const node of graphNodes) {
       if (node.kind === 'reservoir') continue; // Note: 'continue' instead of 'return' here
       
       const dist = Math.sqrt(Math.pow(node.x - dragState.x, 2) + Math.pow(node.y - dragState.y, 2));
@@ -295,7 +450,7 @@ export default function LiveDemo() {
             </div>
           </div>
 
-          <button className="bg-[#1664bf] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#1664bf] transition-colors font-[500] text-sm mt-2">
+          <button onClick={handleRunAnalysis} className="bg-[#1664bf] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#1664bf] transition-colors font-[500] text-sm mt-2">
             Run Analysis
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -315,9 +470,9 @@ export default function LiveDemo() {
             onPointerLeave={handlePointerUp}
           >
             {/* Draw Pipes (Edges) */}
-            {EDGES.map((edge) => {
-              const sourceNode = NODE_BY_ID[edge.source];
-              const targetNode = NODE_BY_ID[edge.target];
+            {graphEdges.map((edge) => {
+              const sourceNode = graphNodeById[edge.source];
+              const targetNode = graphNodeById[edge.target];
               if (!sourceNode || !targetNode) return null;
 
               return (
@@ -335,7 +490,7 @@ export default function LiveDemo() {
             })}
 
             {/* Base Nodes (Visual only now, snapping is handled via math on drop) */}
-            {NODES.map((node) => {
+            {graphNodes.map((node) => {
               const isReservoir = node.kind === 'reservoir';
               return (
                 <g key={node.id}>
@@ -367,7 +522,7 @@ export default function LiveDemo() {
 
             {/* Moving Sensor Tokens Layer */}
             {sensorTokens.map((token) => {
-              const node = NODE_BY_ID[token.nodeId];
+              const node = graphNodeById[token.nodeId];
               if (!node) return null;
 
               const isDragging = dragState?.tokenIndex === token.sensorIndex;
@@ -471,10 +626,10 @@ export default function LiveDemo() {
 
           <div className="w-full flex-1 mt-6 flex flex-col justify-center">
             <p className="text-white text-7xl lg:text-[6.5rem] font-[700] tracking-tight leading-none mb-2 transition-all">
-              {currentData.accuracy}%
+              40.31%
             </p>
             <p className="text-gray-400 text-sm font-[400]">
-              {isOptimized ? 'Optimal sensor placement' : 'Custom sensor placement (Click "Run Analysis" to optimize)'}
+              {predictionLabel || apiStatus || (isOptimized ? 'Top-1 benchmark accuracy | Top-3 61.03% | Top-5 68.28%' : 'Custom sensor placement (Click "Run Analysis" to optimize)')}
             </p>
           </div>
         </div>
