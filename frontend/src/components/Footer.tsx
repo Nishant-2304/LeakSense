@@ -6,7 +6,7 @@ export default function Footer() {
       className="relative w-full h-[40vh] min-h-[350px] flex flex-col py-10 font-montserrat overflow-hidden z-30"
       style={{
         // Radial gradient anchored at the bottom center: lighter red spreading into a dark maroon
-        background: 'radial-gradient(ellipse at bottom center, #d82923 0%, #6e110e 100%)'
+        background: 'radial-gradient(ellipse at bottom center, #1664bf 0%, #1518db 100%)'
       }}
     >
       

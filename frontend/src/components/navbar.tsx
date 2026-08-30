@@ -12,12 +12,12 @@ export default function Navbar() {
         <Image 
           src="/images/Group 4.webp" 
           alt="LeakSense Logo" 
-          width={56} // Increased size from 36
-          height={56}
+          width={36} // Increased size from 36
+          height={36}
           className="object-contain"
         />
         {/* Increased text size to 4xl */}
-        <span className="text-white font-montserrat font-[700] text-4xl tracking-wide drop-shadow-md">
+        <span className="text-white font-montserrat font-[600] text-2xl tracking-wide drop-shadow-md">
           LeakSense
         </span>
       </div>
@@ -27,7 +27,7 @@ export default function Navbar() {
         {/* Increased text size to 2xl and bumped weight to 600 for better visibility */}
         <Link 
           href="#" 
-          className="text-white font-montserrat font-[600] text-2xl hover:text-gray-300 transition-colors drop-shadow-md"
+          className="text-white font-montserrat font-[500] text-1xl hover:text-gray-300 transition-colors drop-shadow-md"
         >
           Home
         </Link>
