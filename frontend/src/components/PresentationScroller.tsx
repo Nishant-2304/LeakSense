@@ -59,24 +59,52 @@ function renderTextWithCursive(text: string, cursiveWord: string) {
 
 export default function PresentationScroller() {
   const [currentImage, setCurrentImage] = useState(slides[0].imageFirstHalf);
+  const [scrollDir, setScrollDir] = useState(1);
+
+  // Track the direction of the scroll by comparing image array indices
+  const handleImageChange = (newImage: string) => {
+    if (newImage === currentImage) return;
+    
+    const allImages = slides.flatMap(s => [s.imageFirstHalf, s.imageSecondHalf]);
+    const newIdx = allImages.indexOf(newImage);
+    const currIdx = allImages.indexOf(currentImage);
+    
+    setScrollDir(newIdx > currIdx ? 1 : -1);
+    setCurrentImage(newImage);
+  };
+
+  // Dynamic animation variants
+  const imageVariants = {
+    enter: { x: -60, opacity: 0 },
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({
+      // If scrolling up (dir === -1), snap towards left. If down, stay in place and fade.
+      x: dir === -1 ? -60 : 0,
+      opacity: 0,
+      scale: 0.98,
+      transition: { duration: 0.4 }
+    })
+  };
 
   return (
-    // Changed to a standard Flex row layout
     <div className="relative w-full bg-black font-montserrat flex flex-row">
       
       {/* THE STICKY VIEWFINDER (Left Pane) */}
       <div className="w-[35%] lg:w-[40%] relative z-10">
         <div className="sticky top-0 w-full h-screen overflow-hidden bg-black">
-          <AnimatePresence mode="popLayout">
+          {/* custom={scrollDir} passes the direction to our variants */}
+          <AnimatePresence mode="popLayout" custom={scrollDir}>
             <motion.img
               key={currentImage}
               src={currentImage}
               alt="Presentation visual"
               className="w-full h-full object-cover"
-              initial={{ x: '-100%', opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              custom={scrollDir}
+              variants={imageVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.7, ease: "easeOut" }} 
             />
           </AnimatePresence>
         </div>
@@ -91,31 +119,36 @@ export default function PresentationScroller() {
           >
             
             {/* INVISIBLE SCROLL TRIGGERS */}
-            {/* Positioned absolute within the specific slide section */}
             <div className="absolute inset-0 w-full h-full flex flex-col pointer-events-none z-0">
               <motion.div 
-                className="w-full h-1/2"
-                onViewportEnter={() => setCurrentImage(slide.imageFirstHalf)}
-                viewport={{ amount: 0.5 }} 
+                // Delay added here for the first slide (75% height pushes the trigger much further down)
+                className={slide.id === '01' ? "w-full h-[75%]" : "w-full h-1/2"}
+                onViewportEnter={() => handleImageChange(slide.imageFirstHalf)}
+                viewport={{ amount: 0.1 }} 
               />
               <motion.div 
-                className="w-full h-1/2"
-                onViewportEnter={() => setCurrentImage(slide.imageSecondHalf)}
-                viewport={{ amount: 0.5 }} 
+                className={slide.id === '01' ? "w-full h-[25%]" : "w-full h-1/2"}
+                onViewportEnter={() => handleImageChange(slide.imageSecondHalf)}
+                viewport={{ amount: 0.1 }} 
               />
             </div>
 
             {/* TEXT CONTENT */}
             <div className="relative z-10">
-              <h2 className="text-[65px] font-[700] text-[#F02B11] mb-4 leading-[1.2]">
+              
+              <h3 className="text-white text-2xl lg:text-3xl font-[700] mb-12 tracking-wide">
+                Current Challenges
+              </h3>
+
+              <h2 className="text-[65px] font-[700] text-[#F02B11] leading-none mb-0">
                 {slide.id}
               </h2>
               
-              <h1 className="text-[65px] font-[700] text-white tracking-tight mb-8 leading-[1.2] flex flex-wrap items-baseline gap-x-4">
+              <h1 className="text-[65px] font-[700] text-white tracking-tight mb-8 leading-[1.1] flex flex-wrap items-baseline gap-x-4">
                 {slide.title} <CursiveWord word={slide.cursiveWord} capitalize={true} />
               </h1>
               
-              <p className="text-xl font-[400] text-gray-200 leading-relaxed max-w-2xl mb-12">
+              <p className="text-base lg:text-lg font-[400] text-gray-200 leading-relaxed max-w-2xl mb-12">
                 {renderTextWithCursive(slide.body, slide.cursiveWord)}
               </p>
               

@@ -1492,8 +1492,40 @@ function renderTextWithCursive(text, cursiveWord) {
 function PresentationScroller() {
     _s();
     const [currentImage, setCurrentImage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(slides[0].imageFirstHalf);
-    return(// Changed to a standard Flex row layout
-    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    const [scrollDir, setScrollDir] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(1);
+    // Track the direction of the scroll by comparing image array indices
+    const handleImageChange = (newImage)=>{
+        if (newImage === currentImage) return;
+        const allImages = slides.flatMap((s)=>[
+                s.imageFirstHalf,
+                s.imageSecondHalf
+            ]);
+        const newIdx = allImages.indexOf(newImage);
+        const currIdx = allImages.indexOf(currentImage);
+        setScrollDir(newIdx > currIdx ? 1 : -1);
+        setCurrentImage(newImage);
+    };
+    // Dynamic animation variants
+    const imageVariants = {
+        enter: {
+            x: -60,
+            opacity: 0
+        },
+        center: {
+            x: 0,
+            opacity: 1
+        },
+        exit: (dir)=>({
+                // If scrolling up (dir === -1), snap towards left. If down, stay in place and fade.
+                x: dir === -1 ? -60 : 0,
+                opacity: 0,
+                scale: 0.98,
+                transition: {
+                    duration: 0.4
+                }
+            })
+    };
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "relative w-full bg-black font-montserrat flex flex-row",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1502,48 +1534,38 @@ function PresentationScroller() {
                     className: "sticky top-0 w-full h-screen overflow-hidden bg-black",
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AnimatePresence"], {
                         mode: "popLayout",
+                        custom: scrollDir,
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].img, {
                             src: currentImage,
                             alt: "Presentation visual",
                             className: "w-full h-full object-cover",
-                            initial: {
-                                x: '-100%',
-                                opacity: 0
-                            },
-                            animate: {
-                                x: 0,
-                                opacity: 1
-                            },
-                            exit: {
-                                opacity: 0,
-                                scale: 0.95,
-                                transition: {
-                                    duration: 0.2
-                                }
-                            },
+                            custom: scrollDir,
+                            variants: imageVariants,
+                            initial: "enter",
+                            animate: "center",
+                            exit: "exit",
                             transition: {
-                                type: 'spring',
-                                damping: 25,
-                                stiffness: 200
+                                duration: 0.7,
+                                ease: "easeOut"
                             }
                         }, currentImage, false, {
                             fileName: "[project]/src/components/PresentationScroller.tsx",
-                            lineNumber: 71,
+                            lineNumber: 97,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/PresentationScroller.tsx",
-                        lineNumber: 70,
+                        lineNumber: 96,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/PresentationScroller.tsx",
-                    lineNumber: 69,
+                    lineNumber: 94,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/PresentationScroller.tsx",
-                lineNumber: 68,
+                lineNumber: 93,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1555,46 +1577,55 @@ function PresentationScroller() {
                                 className: "absolute inset-0 w-full h-full flex flex-col pointer-events-none z-0",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
-                                        className: "w-full h-1/2",
-                                        onViewportEnter: ()=>setCurrentImage(slide.imageFirstHalf),
+                                        // Delay added here for the first slide (75% height pushes the trigger much further down)
+                                        className: slide.id === '01' ? "w-full h-[75%]" : "w-full h-1/2",
+                                        onViewportEnter: ()=>handleImageChange(slide.imageFirstHalf),
                                         viewport: {
-                                            amount: 0.5
+                                            amount: 0.1
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PresentationScroller.tsx",
-                                        lineNumber: 96,
+                                        lineNumber: 123,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
-                                        className: "w-full h-1/2",
-                                        onViewportEnter: ()=>setCurrentImage(slide.imageSecondHalf),
+                                        className: slide.id === '01' ? "w-full h-[25%]" : "w-full h-1/2",
+                                        onViewportEnter: ()=>handleImageChange(slide.imageSecondHalf),
                                         viewport: {
-                                            amount: 0.5
+                                            amount: 0.1
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PresentationScroller.tsx",
-                                        lineNumber: 101,
+                                        lineNumber: 129,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PresentationScroller.tsx",
-                                lineNumber: 95,
+                                lineNumber: 122,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "relative z-10",
                                 children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                        className: "text-white text-2xl lg:text-3xl font-[700] mb-12 tracking-wide",
+                                        children: "Current Challenges"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/PresentationScroller.tsx",
+                                        lineNumber: 139,
+                                        columnNumber: 15
+                                    }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                        className: "text-[65px] font-[700] text-[#F02B11] mb-4 leading-[1.2]",
+                                        className: "text-[65px] font-[700] text-[#F02B11] leading-none mb-0",
                                         children: slide.id
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PresentationScroller.tsx",
-                                        lineNumber: 110,
+                                        lineNumber: 143,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                        className: "text-[65px] font-[700] text-white tracking-tight mb-8 leading-[1.2] flex flex-wrap items-baseline gap-x-4",
+                                        className: "text-[65px] font-[700] text-white tracking-tight mb-8 leading-[1.1] flex flex-wrap items-baseline gap-x-4",
                                         children: [
                                             slide.title,
                                             " ",
@@ -1603,21 +1634,21 @@ function PresentationScroller() {
                                                 capitalize: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/PresentationScroller.tsx",
-                                                lineNumber: 115,
+                                                lineNumber: 148,
                                                 columnNumber: 31
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/PresentationScroller.tsx",
-                                        lineNumber: 114,
+                                        lineNumber: 147,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                        className: "text-xl font-[400] text-gray-200 leading-relaxed max-w-2xl mb-12",
+                                        className: "text-base lg:text-lg font-[400] text-gray-200 leading-relaxed max-w-2xl mb-12",
                                         children: renderTextWithCursive(slide.body, slide.cursiveWord)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PresentationScroller.tsx",
-                                        lineNumber: 118,
+                                        lineNumber: 151,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1628,7 +1659,7 @@ function PresentationScroller() {
                                                 children: "EG :"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/PresentationScroller.tsx",
-                                                lineNumber: 123,
+                                                lineNumber: 156,
                                                 columnNumber: 17
                                             }, this),
                                             " ",
@@ -1636,34 +1667,34 @@ function PresentationScroller() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/PresentationScroller.tsx",
-                                        lineNumber: 122,
+                                        lineNumber: 155,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PresentationScroller.tsx",
-                                lineNumber: 109,
+                                lineNumber: 137,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, slide.id, true, {
                         fileName: "[project]/src/components/PresentationScroller.tsx",
-                        lineNumber: 88,
+                        lineNumber: 116,
                         columnNumber: 11
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/components/PresentationScroller.tsx",
-                lineNumber: 86,
+                lineNumber: 114,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/PresentationScroller.tsx",
-        lineNumber: 65,
+        lineNumber: 90,
         columnNumber: 5
-    }, this));
+    }, this);
 }
-_s(PresentationScroller, "ZeTiV8gwWw1cZhwbVCJXMj4OZPY=");
+_s(PresentationScroller, "41zLbqXxd6Vqg7EU8zcdvWYZMw8=");
 _c1 = PresentationScroller;
 var _c, _c1;
 __turbopack_context__.k.register(_c, "CursiveWord");
