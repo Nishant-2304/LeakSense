@@ -10,6 +10,7 @@
       --tw-rotate-z: initial;
       --tw-skew-x: initial;
       --tw-skew-y: initial;
+      --tw-space-y-reverse: 0;
       --tw-border-style: solid;
       --tw-gradient-position: initial;
       --tw-gradient-from: #0000;
@@ -67,12 +68,16 @@
 
 @layer theme {
   :root, :host {
+    --color-red-400: #ff6568;
+    --color-red-900: #82181a;
+    --color-green-400: #05df72;
     --color-gray-100: #f3f4f6;
     --color-gray-200: #e5e7eb;
     --color-gray-300: #d1d5dc;
     --color-gray-400: #99a1af;
     --color-gray-500: #6a7282;
     --color-gray-600: #4a5565;
+    --color-gray-700: #364153;
     --color-black: #000;
     --color-white: #fff;
     --spacing: .25rem;
@@ -116,6 +121,7 @@
     --radius-sm: .25rem;
     --drop-shadow-md: 0 3px 3px #0000001f;
     --ease-out: cubic-bezier(0, 0, .2, 1);
+    --animate-spin: spin 1s linear infinite;
     --animate-pulse: pulse 2s cubic-bezier(.4, 0, .6, 1) infinite;
     --blur-sm: 8px;
     --default-transition-duration: .15s;
@@ -126,12 +132,16 @@
 
   @supports (color: lab(0% 0 0)) {
     :root, :host {
+      --color-red-400: lab(63.7053% 60.7449 31.3109);
+      --color-red-900: lab(28.5139% 44.5539 29.0463);
+      --color-green-400: lab(78.503% -64.9265 39.7492);
       --color-gray-100: lab(96.1596% -.082314 -1.13575);
       --color-gray-200: lab(91.6229% -.159085 -2.26791);
       --color-gray-300: lab(85.1236% -.612259 -3.7138);
       --color-gray-400: lab(65.9269% -.832707 -8.17474);
       --color-gray-500: lab(47.7841% -.393212 -10.0268);
       --color-gray-600: lab(35.6337% -1.58697 -10.8425);
+      --color-gray-700: lab(27.1134% -.956401 -12.3224);
     }
   }
 }
@@ -525,10 +535,6 @@
     margin-bottom: var(--spacing);
   }
 
-  .mb-2 {
-    margin-bottom: calc(var(--spacing) * 2);
-  }
-
   .mb-8 {
     margin-bottom: calc(var(--spacing) * 8);
   }
@@ -561,12 +567,20 @@
     display: flex;
   }
 
+  .grid {
+    display: grid;
+  }
+
   .hidden {
     display: none;
   }
 
   .h-1\/2 {
     height: 50%;
+  }
+
+  .h-5 {
+    height: calc(var(--spacing) * 5);
   }
 
   .h-6 {
@@ -635,6 +649,10 @@
 
   .min-h-screen {
     min-height: 100vh;
+  }
+
+  .w-5 {
+    width: calc(var(--spacing) * 5);
   }
 
   .w-6 {
@@ -742,6 +760,10 @@
     animation: var(--animate-pulse);
   }
 
+  .animate-spin {
+    animation: var(--animate-spin);
+  }
+
   .cursor-grab {
     cursor: grab;
   }
@@ -756,6 +778,10 @@
 
   .appearance-none {
     appearance: none;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .flex-col {
@@ -822,6 +848,12 @@
     gap: calc(var(--spacing) * 12);
   }
 
+  :where(.space-y-3 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
+  }
+
   .gap-x-4 {
     column-gap: calc(var(--spacing) * 4);
   }
@@ -876,6 +908,20 @@
 
   .border-gray-600 {
     border-color: var(--color-gray-600);
+  }
+
+  .border-gray-700 {
+    border-color: var(--color-gray-700);
+  }
+
+  .border-red-900\/50 {
+    border-color: #82181a80;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .border-red-900\/50 {
+      border-color: color-mix(in oklab, var(--color-red-900) 50%, transparent);
+    }
   }
 
   .border-white {
@@ -944,6 +990,16 @@
     }
   }
 
+  .bg-red-900\/20 {
+    background-color: #82181a33;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-red-900\/20 {
+      background-color: color-mix(in oklab, var(--color-red-900) 20%, transparent);
+    }
+  }
+
   .bg-transparent {
     background-color: #0000;
   }
@@ -999,6 +1055,14 @@
     padding: calc(var(--spacing) * 2);
   }
 
+  .p-3 {
+    padding: calc(var(--spacing) * 3);
+  }
+
+  .p-4 {
+    padding: calc(var(--spacing) * 4);
+  }
+
   .px-2 {
     padding-inline: calc(var(--spacing) * 2);
   }
@@ -1029,6 +1093,10 @@
 
   .py-4 {
     padding-block: calc(var(--spacing) * 4);
+  }
+
+  .py-8 {
+    padding-block: calc(var(--spacing) * 8);
   }
 
   .py-10 {
@@ -1110,11 +1178,6 @@
   .text-6xl {
     font-size: var(--text-6xl);
     line-height: var(--tw-leading, var(--text-6xl--line-height));
-  }
-
-  .text-7xl {
-    font-size: var(--text-7xl);
-    line-height: var(--tw-leading, var(--text-7xl--line-height));
   }
 
   .text-base {
@@ -1264,6 +1327,14 @@
     color: var(--color-gray-500);
   }
 
+  .text-green-400 {
+    color: var(--color-green-400);
+  }
+
+  .text-red-400 {
+    color: var(--color-red-400);
+  }
+
   .text-white {
     color: var(--color-white);
   }
@@ -1280,8 +1351,16 @@
     opacity: 0;
   }
 
+  .opacity-25 {
+    opacity: .25;
+  }
+
   .opacity-40 {
     opacity: .4;
+  }
+
+  .opacity-75 {
+    opacity: .75;
   }
 
   .opacity-80 {
@@ -1392,13 +1471,13 @@
       opacity: 1;
     }
 
-    .hover\:bg-\[\#F02B11\]\/10:hover {
-      background-color: #f02b111a;
-      background-color: lab(53.1167% 71.8697 62.7898 / .1);
+    .hover\:bg-\[\#1664bf\]:hover {
+      background-color: #1664bf;
     }
 
-    .hover\:bg-\[\#d0250f\]:hover {
-      background-color: #d0250f;
+    .hover\:bg-\[\#1664bf\]\/10:hover {
+      background-color: #1664bf1a;
+      background-color: lab(41.9576% 4.65652 -55.134 / .1);
     }
 
     .hover\:text-gray-300:hover {
@@ -1417,6 +1496,14 @@
   .focus\:outline-none:focus {
     --tw-outline-style: none;
     outline-style: none;
+  }
+
+  .disabled\:cursor-not-allowed:disabled {
+    cursor: not-allowed;
+  }
+
+  .disabled\:opacity-50:disabled {
+    opacity: .5;
   }
 
   @media (min-width: 64rem) {
@@ -1521,10 +1608,6 @@
       line-height: var(--tw-leading, var(--text-xl--line-height));
     }
 
-    .lg\:text-\[6\.5rem\] {
-      font-size: 6.5rem;
-    }
-
     .lg\:text-\[15px\] {
       font-size: 15px;
     }
@@ -1607,6 +1690,12 @@ body {
 @property --tw-skew-y {
   syntax: "*";
   inherits: false
+}
+
+@property --tw-space-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
 }
 
 @property --tw-border-style {
@@ -1879,6 +1968,12 @@ body {
 @property --tw-ease {
   syntax: "*";
   inherits: false
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {

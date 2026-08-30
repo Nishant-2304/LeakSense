@@ -965,12 +965,14 @@ __turbopack_context__.s([
     "default",
     ()=>LiveDemo
 ]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 'use client';
 ;
+const API_BASE = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const NODES = [
     {
         id: "2",
@@ -1608,6 +1610,9 @@ function LiveDemo() {
     const [sensors, setSensors] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('12');
     const [sensorTokens, setSensorTokens] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [isOptimized, setIsOptimized] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    const [prediction, setPrediction] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     // Custom Drag State
     const [dragState, setDragState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const numSensors = parseInt(sensors, 10);
@@ -1627,13 +1632,36 @@ function LiveDemo() {
     }["LiveDemo.useEffect"], [
         numSensors
     ]);
-    const handleRunAnalysis = ()=>{
+    const handleRunAnalysis = async ()=>{
+        setIsLoading(true);
+        setError(null);
         const optimalNodes = OPTIMAL_PLACEMENT_ORDER.slice(0, numSensors);
         setSensorTokens((prev)=>prev.map((token, idx)=>({
                     ...token,
                     nodeId: optimalNodes[idx] || token.nodeId
                 })));
         setIsOptimized(true);
+        try {
+            const res = await fetch(`${API_BASE}/simulate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    sensor_budget: numSensors
+                })
+            });
+            if (!res.ok) {
+                throw new Error(`API error: ${res.status}`);
+            }
+            const data = await res.json();
+            setPrediction(data);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to run simulation');
+            console.error(err);
+        } finally{
+            setIsLoading(false);
+        }
     };
     // --- CUSTOM SVG DRAG LOGIC ---
     const handlePointerDown = (e, tokenIndex, startX, startY)=>{
@@ -1713,7 +1741,7 @@ function LiveDemo() {
                 className: "absolute inset-0 bg-black/40 z-0 pointer-events-none"
             }, void 0, false, {
                 fileName: "[project]/src/components/LiveDemo.tsx",
-                lineNumber: 247,
+                lineNumber: 285,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1727,7 +1755,7 @@ function LiveDemo() {
                                 children: "LeakSense In Action"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 253,
+                                lineNumber: 291,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1741,7 +1769,7 @@ function LiveDemo() {
                                                 children: "Enter number of Sensors"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 259,
+                                                lineNumber: 297,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1762,12 +1790,12 @@ function LiveDemo() {
                                                                 ]
                                                             }, d.sensors, true, {
                                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                                lineNumber: 269,
+                                                                lineNumber: 307,
                                                                 columnNumber: 21
                                                             }, this))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 263,
+                                                        lineNumber: 301,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1785,29 +1813,29 @@ function LiveDemo() {
                                                                 points: "6 9 12 15 18 9"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                                lineNumber: 276,
+                                                                lineNumber: 314,
                                                                 columnNumber: 21
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                                            lineNumber: 275,
+                                                            lineNumber: 313,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 274,
+                                                        lineNumber: 312,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 262,
+                                                lineNumber: 300,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 258,
+                                        lineNumber: 296,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1818,11 +1846,11 @@ function LiveDemo() {
                                                 children: "Upload your data"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 283,
+                                                lineNumber: 321,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                className: "h-[42px] w-[42px] border border-[#1664bf] bg-black/50 rounded-sm flex items-center justify-center hover:bg-[#F02B11]/10 transition-colors cursor-pointer group",
+                                                className: "h-[42px] w-[42px] border border-[#1664bf] bg-black/50 rounded-sm flex items-center justify-center hover:bg-[#1664bf]/10 transition-colors cursor-pointer group",
                                                 title: "Upload CSV",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
                                                     width: "18",
@@ -1842,86 +1870,134 @@ function LiveDemo() {
                                                             y2: "5"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                                            lineNumber: 291,
+                                                            lineNumber: 329,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("polyline", {
                                                             points: "5 12 12 5 19 12"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                                            lineNumber: 292,
+                                                            lineNumber: 330,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 290,
+                                                    lineNumber: 328,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 286,
+                                                lineNumber: 324,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 282,
+                                        lineNumber: 320,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 257,
+                                lineNumber: 295,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                className: "bg-[#1664bf] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#d0250f] transition-colors font-[500] text-sm mt-2",
-                                children: [
-                                    "Run Analysis",
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
-                                        width: "16",
-                                        height: "16",
-                                        viewBox: "0 0 24 24",
-                                        fill: "none",
-                                        stroke: "currentColor",
-                                        strokeWidth: "2",
-                                        strokeLinecap: "round",
-                                        strokeLinejoin: "round",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
-                                                x1: "5",
-                                                y1: "12",
-                                                x2: "19",
-                                                y2: "12"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 301,
-                                                columnNumber: 15
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("polyline", {
-                                                points: "12 5 19 12 12 19"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 302,
-                                                columnNumber: 15
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 300,
-                                        columnNumber: 13
-                                    }, this)
-                                ]
-                            }, void 0, true, {
+                                onClick: handleRunAnalysis,
+                                disabled: isLoading,
+                                className: "bg-[#1664bf] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#1664bf] transition-colors font-[500] text-sm mt-2 disabled:opacity-50 disabled:cursor-not-allowed",
+                                children: isLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                            className: "animate-spin h-5 w-5",
+                                            viewBox: "0 0 24 24",
+                                            fill: "none",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                                    className: "opacity-25",
+                                                    cx: "12",
+                                                    cy: "12",
+                                                    r: "10",
+                                                    stroke: "currentColor",
+                                                    strokeWidth: "4"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/LiveDemo.tsx",
+                                                    lineNumber: 344,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                    className: "opacity-75",
+                                                    fill: "currentColor",
+                                                    d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/LiveDemo.tsx",
+                                                    lineNumber: 345,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/LiveDemo.tsx",
+                                            lineNumber: 343,
+                                            columnNumber: 17
+                                        }, this),
+                                        "Running..."
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/components/LiveDemo.tsx",
+                                    lineNumber: 342,
+                                    columnNumber: 15
+                                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                    children: [
+                                        "Run Analysis",
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                            width: "16",
+                                            height: "16",
+                                            viewBox: "0 0 24 24",
+                                            fill: "none",
+                                            stroke: "currentColor",
+                                            strokeWidth: "2",
+                                            strokeLinecap: "round",
+                                            strokeLinejoin: "round",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
+                                                    x1: "5",
+                                                    y1: "12",
+                                                    x2: "19",
+                                                    y2: "12"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/LiveDemo.tsx",
+                                                    lineNumber: 353,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("polyline", {
+                                                    points: "12 5 19 12 12 19"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/LiveDemo.tsx",
+                                                    lineNumber: 354,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/LiveDemo.tsx",
+                                            lineNumber: 352,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/components/LiveDemo.tsx",
+                                    lineNumber: 350,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 298,
+                                lineNumber: 336,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 252,
+                        lineNumber: 290,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1950,7 +2026,7 @@ function LiveDemo() {
                                         strokeLinecap: "round"
                                     }, edge.id, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 324,
+                                        lineNumber: 378,
                                         columnNumber: 17
                                     }, this);
                                 }),
@@ -1966,7 +2042,7 @@ function LiveDemo() {
                                                 className: "pointer-events-none"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 343,
+                                                lineNumber: 397,
                                                 columnNumber: 19
                                             }, this),
                                             isReservoir && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -1980,13 +2056,13 @@ function LiveDemo() {
                                                 children: node.label
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 352,
+                                                lineNumber: 406,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, node.id, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 341,
+                                        lineNumber: 395,
                                         columnNumber: 17
                                     }, this);
                                 }),
@@ -2015,7 +2091,7 @@ function LiveDemo() {
                                                 className: `${isDragging ? '' : 'animate-pulse'} pointer-events-none transition-opacity`
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 391,
+                                                lineNumber: 445,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -2025,7 +2101,7 @@ function LiveDemo() {
                                                 fill: "transparent"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 401,
+                                                lineNumber: 455,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -2038,31 +2114,31 @@ function LiveDemo() {
                                                 className: "pointer-events-none shadow-md"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 404,
+                                                lineNumber: 458,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, `sensor-token-${token.sensorIndex}`, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 380,
+                                        lineNumber: 434,
                                         columnNumber: 17
                                     }, this);
                                 })
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/LiveDemo.tsx",
-                            lineNumber: 309,
+                            lineNumber: 363,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 308,
+                        lineNumber: 362,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LiveDemo.tsx",
-                lineNumber: 250,
+                lineNumber: 288,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2079,7 +2155,7 @@ function LiveDemo() {
                                         children: "ROI Frontier"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 425,
+                                        lineNumber: 479,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2087,13 +2163,13 @@ function LiveDemo() {
                                         children: "Accuracy vs. Cost"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 426,
+                                        lineNumber: 480,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 424,
+                                lineNumber: 478,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2112,7 +2188,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 431,
+                                                lineNumber: 485,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -2126,7 +2202,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 432,
+                                                lineNumber: 486,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -2140,7 +2216,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 433,
+                                                lineNumber: 487,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -2154,7 +2230,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 434,
+                                                lineNumber: 488,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -2166,13 +2242,13 @@ function LiveDemo() {
                                                 className: "opacity-80"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 436,
+                                                lineNumber: 490,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 430,
+                                        lineNumber: 484,
                                         columnNumber: 13
                                     }, this),
                                     paretoData.map((point)=>{
@@ -2189,7 +2265,7 @@ function LiveDemo() {
                                                     className: `rounded-full transition-all duration-300 ${isActive ? 'w-[8px] h-[8px] bg-[#F02B11] shadow-[0_0_12px_#F02B11]' : 'w-[4px] h-[4px] bg-[#555] group-hover:bg-gray-300'}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 448,
+                                                    lineNumber: 502,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2197,26 +2273,26 @@ function LiveDemo() {
                                                     children: point.sensors
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 453,
+                                                    lineNumber: 507,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, point.sensors, true, {
                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                            lineNumber: 442,
+                                            lineNumber: 496,
                                             columnNumber: 17
                                         }, this);
                                     })
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 429,
+                                lineNumber: 483,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 423,
+                        lineNumber: 477,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2226,65 +2302,226 @@ function LiveDemo() {
                                 className: "flex justify-between items-start w-full h-[30px] shrink-0",
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                     className: "text-gray-100 text-lg font-[400]",
-                                    children: "Accuracy Score"
+                                    children: "ML Prediction"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                    lineNumber: 469,
+                                    lineNumber: 523,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 468,
+                                lineNumber: 522,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "w-full flex-1 mt-6 flex flex-col justify-center",
+                                className: "w-full flex-1 mt-6 flex flex-col justify-center gap-4",
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                        className: "text-white text-7xl lg:text-[6.5rem] font-[700] tracking-tight leading-none mb-2 transition-all",
+                                    isLoading && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "flex items-center gap-3 text-gray-400",
                                         children: [
-                                            currentData.accuracy,
-                                            "%"
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                                className: "animate-spin h-6 w-6 text-[#1664bf]",
+                                                viewBox: "0 0 24 24",
+                                                fill: "none",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                                        className: "opacity-25",
+                                                        cx: "12",
+                                                        cy: "12",
+                                                        r: "10",
+                                                        stroke: "currentColor",
+                                                        strokeWidth: "4"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/LiveDemo.tsx",
+                                                        lineNumber: 530,
+                                                        columnNumber: 19
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                        className: "opacity-75",
+                                                        fill: "currentColor",
+                                                        d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/LiveDemo.tsx",
+                                                        lineNumber: 531,
+                                                        columnNumber: 19
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                lineNumber: 529,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                children: "Running PINN inference..."
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                lineNumber: 533,
+                                                columnNumber: 17
+                                            }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 473,
-                                        columnNumber: 13
+                                        lineNumber: 528,
+                                        columnNumber: 15
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                        className: "text-gray-400 text-sm font-[400]",
-                                        children: isOptimized ? 'Optimal sensor placement' : 'Custom sensor placement (Click "Run Analysis" to optimize)'
+                                    error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "text-red-400 text-sm bg-red-900/20 p-3 rounded-sm border border-red-900/50",
+                                        children: [
+                                            "Error: ",
+                                            error
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/LiveDemo.tsx",
+                                        lineNumber: 538,
+                                        columnNumber: 15
+                                    }, this),
+                                    prediction && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "space-y-3",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "grid grid-cols-2 gap-4",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "bg-[#111] border border-gray-700 p-4 rounded-sm",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                className: "text-gray-400 text-xs uppercase tracking-wide mb-1",
+                                                                children: "Ground Truth"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                                lineNumber: 547,
+                                                                columnNumber: 21
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                className: "text-white text-2xl font-[500]",
+                                                                children: [
+                                                                    "(",
+                                                                    prediction.ground_truth.x.toFixed(2),
+                                                                    ", ",
+                                                                    prediction.ground_truth.y.toFixed(2),
+                                                                    ")"
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                                lineNumber: 548,
+                                                                columnNumber: 21
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/components/LiveDemo.tsx",
+                                                        lineNumber: 546,
+                                                        columnNumber: 19
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "bg-[#111] border border-gray-700 p-4 rounded-sm",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                className: "text-gray-400 text-xs uppercase tracking-wide mb-1",
+                                                                children: "Prediction"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                                lineNumber: 551,
+                                                                columnNumber: 21
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                className: "text-[#F02B11] text-2xl font-[500]",
+                                                                children: [
+                                                                    "(",
+                                                                    prediction.prediction.x.toFixed(2),
+                                                                    ", ",
+                                                                    prediction.prediction.y.toFixed(2),
+                                                                    ")"
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                                lineNumber: 552,
+                                                                columnNumber: 21
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/components/LiveDemo.tsx",
+                                                        lineNumber: 550,
+                                                        columnNumber: 19
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                lineNumber: 545,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "bg-[#111] border border-gray-700 p-4 rounded-sm",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        className: "text-gray-400 text-xs uppercase tracking-wide mb-1",
+                                                        children: [
+                                                            "Scenario ID: ",
+                                                            prediction.scenario_id,
+                                                            " | Sensors: ",
+                                                            prediction.sensor_budget
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/components/LiveDemo.tsx",
+                                                        lineNumber: 557,
+                                                        columnNumber: 19
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        className: "text-green-400 text-sm font-[400]",
+                                                        children: [
+                                                            "Status: ",
+                                                            prediction.status
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/components/LiveDemo.tsx",
+                                                        lineNumber: 558,
+                                                        columnNumber: 19
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/components/LiveDemo.tsx",
+                                                lineNumber: 556,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/LiveDemo.tsx",
+                                        lineNumber: 544,
+                                        columnNumber: 15
+                                    }, this),
+                                    !isLoading && !error && !prediction && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-gray-400 text-sm font-[400] text-center py-8",
+                                        children: 'Click "Run Analysis" to run PINN inference'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 476,
-                                        columnNumber: 13
+                                        lineNumber: 564,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 472,
+                                lineNumber: 526,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 467,
+                        lineNumber: 521,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LiveDemo.tsx",
-                lineNumber: 421,
+                lineNumber: 475,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LiveDemo.tsx",
-        lineNumber: 239,
+        lineNumber: 277,
         columnNumber: 5
     }, this);
 }
-_s(LiveDemo, "+iLuEF+rS0hYzPtxjaLHEnrvLH8=");
+_s(LiveDemo, "8IPkr/2YsI8aqo9qcn5nvxlDOyc=");
 _c3 = LiveDemo;
 var _c, _c1, _c2, _c3;
 __turbopack_context__.k.register(_c, "NODE_BY_ID$Object.fromEntries$NODES.map");

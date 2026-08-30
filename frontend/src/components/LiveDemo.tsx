@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 // --- TYPES & HANOI DATA ---
 type JunctionNode = {
   id: string;
@@ -98,6 +100,16 @@ export const NODE_BY_ID: Record<string, JunctionNode> = Object.fromEntries(
   NODES.map((n) => [n.id, n])
 );
 
+// --- API Types ---
+type SimulationResponse = {
+  scenario_id: number;
+  sensor_budget: number;
+  optimized_sensor_nodes: number[];
+  ground_truth: { x: number; y: number };
+  prediction: { x: number; y: number };
+  status: string;
+};
+
 // Optimal Placements based on sequence
 export const OPTIMAL_PLACEMENT_ORDER = [
   "13", "31", "22", "12", "30", "9", "27", "6", "17", "25", 
@@ -137,6 +149,9 @@ export default function LiveDemo() {
   const [sensors, setSensors] = useState<string>('12');
   const [sensorTokens, setSensorTokens] = useState<SensorToken[]>([]);
   const [isOptimized, setIsOptimized] = useState<boolean>(true);
+  const [prediction, setPrediction] = useState<SimulationResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   // Custom Drag State
   const [dragState, setDragState] = useState<{
@@ -158,7 +173,10 @@ export default function LiveDemo() {
     setIsOptimized(true);
   }, [numSensors]);
 
-  const handleRunAnalysis = () => {
+  const handleRunAnalysis = async () => {
+    setIsLoading(true);
+    setError(null);
+    
     const optimalNodes = OPTIMAL_PLACEMENT_ORDER.slice(0, numSensors);
     setSensorTokens((prev) =>
       prev.map((token, idx) => ({
@@ -167,6 +185,26 @@ export default function LiveDemo() {
       }))
     );
     setIsOptimized(true);
+
+    try {
+      const res = await fetch(`${API_BASE}/simulate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sensor_budget: numSensors }),
+      });
+      
+      if (!res.ok) {
+        throw new Error(`API error: ${res.status}`);
+      }
+      
+      const data: SimulationResponse = await res.json();
+      setPrediction(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to run simulation');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // --- CUSTOM SVG DRAG LOGIC ---
@@ -283,8 +321,8 @@ export default function LiveDemo() {
               <label className="text-gray-200 text-sm font-[400]">
                 Upload your data
               </label>
-              <button 
-                className="h-[42px] w-[42px] border border-[#1664bf] bg-black/50 rounded-sm flex items-center justify-center hover:bg-[#F02B11]/10 transition-colors cursor-pointer group"
+              <button
+                className="h-[42px] w-[42px] border border-[#1664bf] bg-black/50 rounded-sm flex items-center justify-center hover:bg-[#1664bf]/10 transition-colors cursor-pointer group"
                 title="Upload CSV"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1664bf" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-y-1 transition-transform">
@@ -295,12 +333,28 @@ export default function LiveDemo() {
             </div>
           </div>
 
-          <button className="bg-[#1664bf] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#d0250f] transition-colors font-[500] text-sm mt-2">
-            Run Analysis
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
+          <button 
+            onClick={handleRunAnalysis}
+            disabled={isLoading}
+            className="bg-[#1664bf] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#1664bf] transition-colors font-[500] text-sm mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? (
+              <>
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Running...
+              </>
+            ) : (
+              <>
+                Run Analysis
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </>
+            )}
           </button>
         </div>
 
@@ -463,19 +517,54 @@ export default function LiveDemo() {
           </div>
         </div>
 
-        {/* Bottom Right: Accuracy Score */}
+        {/* Bottom Right: Accuracy Score & ML Prediction */}
         <div className="w-[50%] pl-16 pr-16 lg:pr-25 py-10 flex flex-col">
           <div className="flex justify-between items-start w-full h-[30px] shrink-0">
-            <h3 className="text-gray-100 text-lg font-[400]">Accuracy Score</h3>
+            <h3 className="text-gray-100 text-lg font-[400]">ML Prediction</h3>
           </div>
 
-          <div className="w-full flex-1 mt-6 flex flex-col justify-center">
-            <p className="text-white text-7xl lg:text-[6.5rem] font-[700] tracking-tight leading-none mb-2 transition-all">
-              {currentData.accuracy}%
-            </p>
-            <p className="text-gray-400 text-sm font-[400]">
-              {isOptimized ? 'Optimal sensor placement' : 'Custom sensor placement (Click "Run Analysis" to optimize)'}
-            </p>
+          <div className="w-full flex-1 mt-6 flex flex-col justify-center gap-4">
+            {isLoading && (
+              <div className="flex items-center gap-3 text-gray-400">
+                <svg className="animate-spin h-6 w-6 text-[#1664bf]" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span>Running PINN inference...</span>
+              </div>
+            )}
+
+            {error && (
+              <div className="text-red-400 text-sm bg-red-900/20 p-3 rounded-sm border border-red-900/50">
+                Error: {error}
+              </div>
+            )}
+
+            {prediction && (
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-[#111] border border-gray-700 p-4 rounded-sm">
+                    <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Ground Truth</p>
+                    <p className="text-white text-2xl font-[500]">({prediction.ground_truth.x.toFixed(2)}, {prediction.ground_truth.y.toFixed(2)})</p>
+                  </div>
+                  <div className="bg-[#111] border border-gray-700 p-4 rounded-sm">
+                    <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Prediction</p>
+                    <p className="text-[#F02B11] text-2xl font-[500]">({prediction.prediction.x.toFixed(2)}, {prediction.prediction.y.toFixed(2)})</p>
+                  </div>
+                </div>
+                
+                <div className="bg-[#111] border border-gray-700 p-4 rounded-sm">
+                  <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Scenario ID: {prediction.scenario_id} | Sensors: {prediction.sensor_budget}</p>
+                  <p className="text-green-400 text-sm font-[400]">Status: {prediction.status}</p>
+                </div>
+              </div>
+            )}
+
+            {!isLoading && !error && !prediction && (
+              <p className="text-gray-400 text-sm font-[400] text-center py-8">
+                Click "Run Analysis" to run PINN inference
+              </p>
+            )}
           </div>
         </div>
       </div>

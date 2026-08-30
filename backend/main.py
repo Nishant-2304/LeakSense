@@ -12,8 +12,8 @@ import random
 import torch
 
 # Import your working math function and the REAL neural network
-from ml.optimization import optimize_sensors_mutual_information
-from ml.network import PINNModel 
+from ml.optimization import optimize_sensors_empirical
+from ml.model import PINNModel 
 
 app = FastAPI(title="LeakSense Core API")
 
@@ -56,7 +56,7 @@ def run_simulation(req: SimulationRequest):
         raise HTTPException(status_code=400, detail="Budget must be between 1 and 31")
 
     # 1. Run the REAL Mutual Information Optimizer
-    optimal_nodes = optimize_sensors_mutual_information(R_train, req.sensor_budget)
+    optimal_nodes = optimize_sensors_empirical(R_train, req.sensor_budget)
     
     # 2. Select the Test Scenario (The true leak event)
     scenario_idx = random.randint(0, R_test.shape[0] - 1) if req.scenario_id == -1 else req.scenario_id
