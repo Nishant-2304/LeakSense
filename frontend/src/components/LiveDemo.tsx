@@ -179,7 +179,7 @@ export default function LiveDemo() {
                 <select
                   value={sensors}
                   onChange={(e) => setSensors(e.target.value)}
-                  className="appearance-none bg-[#111] border border-gray-600 text-white px-4 py-2 pr-12 rounded-sm focus:outline-none focus:border-[#F02B11] w-48 cursor-pointer transition-colors"
+                  className="appearance-none bg-[#111] border border-gray-600 text-white px-4 py-2 pr-12 rounded-sm focus:outline-none focus:border-[#1664bf] w-48 cursor-pointer transition-colors"
                 >
                   {paretoData.map((d) => (
                     <option key={d.sensors} value={d.sensors.toString()}>
@@ -200,10 +200,10 @@ export default function LiveDemo() {
                 Upload your data
               </label>
               <button 
-                className="h-[42px] w-[42px] border border-[#F02B11] bg-black/50 rounded-sm flex items-center justify-center hover:bg-[#F02B11]/10 transition-colors cursor-pointer group"
+                className="h-[42px] w-[42px] border border-[#1664bf] bg-black/50 rounded-sm flex items-center justify-center hover:bg-[#F02B11]/10 transition-colors cursor-pointer group"
                 title="Upload CSV"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F02B11" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-y-1 transition-transform">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1664bf" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-y-1 transition-transform">
                   <line x1="12" y1="19" x2="12" y2="5"></line>
                   <polyline points="5 12 12 5 19 12"></polyline>
                 </svg>
@@ -211,7 +211,7 @@ export default function LiveDemo() {
             </div>
           </div>
 
-          <button className="bg-[#F02B11] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#d0250f] transition-colors font-[500] text-sm mt-2">
+          <button className="bg-[#1664bf] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#d0250f] transition-colors font-[500] text-sm mt-2">
             Run Analysis
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
