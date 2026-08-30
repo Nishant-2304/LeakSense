@@ -157,7 +157,7 @@ export default function Hero() {
           <p className="text-white text-2xl font-montserrat max-w-sm text-center leading-relaxed">
             LeakSense analyzes the structure of a water distribution network to determine where measurements matter most.
           </p>
-          <p className="text-white text-2xl font-montserrat text-right leading-relaxed">
+          <p className="text-white text-2xl font-montserrat text-center leading-relaxed">
             No "cost."<br/>No "coverage."<br/>No "hidden leaks."
           </p>
         </div>
