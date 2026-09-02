@@ -1598,7 +1598,6 @@ const paretoData = Array.from({
     };
 });
 const pathD = `M ${paretoData.map((p)=>`${p.x} ${p.y}`).join(' L ')}`;
-// Map Client mouse coordinates perfectly to SVG viewBox coordinates
 const SVG_VIEWBOX = {
     x: 240,
     y: 250,
@@ -1613,26 +1612,30 @@ function LiveDemo() {
     const [prediction, setPrediction] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [apiStatus, setApiStatus] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     // Custom Drag State
     const [dragState, setDragState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const numSensors = parseInt(sensors, 10);
-    const currentData = paretoData.find((d)=>d.sensors.toString() === sensors) || paretoData[11];
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "LiveDemo.useEffect": ()=>{
-            const initialTargetNodes = OPTIMAL_PLACEMENT_ORDER.slice(0, numSensors);
-            const newTokens = initialTargetNodes.map({
-                "LiveDemo.useEffect.newTokens": (nodeId, idx)=>({
-                        sensorIndex: idx,
-                        nodeId
-                    })
-            }["LiveDemo.useEffect.newTokens"]);
-            setSensorTokens(newTokens);
-            setIsOptimized(true);
+    const graphNodeById = NODE_BY_ID;
+    const applyOptimizedSensors = (nodeIds)=>{
+        const newTokens = nodeIds.slice(0, numSensors).map((nodeId, idx)=>({
+                sensorIndex: idx,
+                nodeId
+            }));
+        setSensorTokens(newTokens);
+        setIsOptimized(true);
+    };
+    const loadOptimizedSensors = async ()=>{
+        try {
+            // Use static optimal placement since backend doesn't have /optimize-sensors
+            applyOptimizedSensors(OPTIMAL_PLACEMENT_ORDER.slice(0, numSensors));
+            setApiStatus('');
+        } catch (err) {
+            console.error(err);
+            setApiStatus('Using fallback sensor placement');
         }
-    }["LiveDemo.useEffect"], [
-        numSensors
-    ]);
-    const handleRunAnalysis = async ()=>{
+    };
+    const runSimulation = async ()=>{
         setIsLoading(true);
         setError(null);
         const optimalNodes = OPTIMAL_PLACEMENT_ORDER.slice(0, numSensors);
@@ -1663,6 +1666,13 @@ function LiveDemo() {
             setIsLoading(false);
         }
     };
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LiveDemo.useEffect": ()=>{
+            loadOptimizedSensors();
+        }
+    }["LiveDemo.useEffect"], [
+        numSensors
+    ]);
     // --- CUSTOM SVG DRAG LOGIC ---
     const handlePointerDown = (e, tokenIndex, startX, startY)=>{
         e.stopPropagation();
@@ -1696,7 +1706,7 @@ function LiveDemo() {
         let closestNode = null;
         let minDistance = 20; // Maximum snapping radius in SVG units
         for (const node of NODES){
-            if (node.kind === 'reservoir') continue; // Note: 'continue' instead of 'return' here
+            if (node.kind === 'reservoir') continue;
             const dist = Math.sqrt(Math.pow(node.x - dragState.x, 2) + Math.pow(node.y - dragState.y, 2));
             if (dist < minDistance) {
                 minDistance = dist;
@@ -1741,7 +1751,7 @@ function LiveDemo() {
                 className: "absolute inset-0 bg-black/40 z-0 pointer-events-none"
             }, void 0, false, {
                 fileName: "[project]/src/components/LiveDemo.tsx",
-                lineNumber: 285,
+                lineNumber: 299,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1755,7 +1765,7 @@ function LiveDemo() {
                                 children: "LeakSense In Action"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 291,
+                                lineNumber: 305,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1769,7 +1779,7 @@ function LiveDemo() {
                                                 children: "Enter number of Sensors"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 297,
+                                                lineNumber: 311,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1790,12 +1800,12 @@ function LiveDemo() {
                                                                 ]
                                                             }, d.sensors, true, {
                                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                                lineNumber: 307,
+                                                                lineNumber: 321,
                                                                 columnNumber: 21
                                                             }, this))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 301,
+                                                        lineNumber: 315,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1813,29 +1823,29 @@ function LiveDemo() {
                                                                 points: "6 9 12 15 18 9"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                                lineNumber: 314,
+                                                                lineNumber: 328,
                                                                 columnNumber: 21
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                                            lineNumber: 313,
+                                                            lineNumber: 327,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 312,
+                                                        lineNumber: 326,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 300,
+                                                lineNumber: 314,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 296,
+                                        lineNumber: 310,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1846,7 +1856,7 @@ function LiveDemo() {
                                                 children: "Upload your data"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 321,
+                                                lineNumber: 335,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1870,41 +1880,41 @@ function LiveDemo() {
                                                             y2: "5"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                                            lineNumber: 329,
+                                                            lineNumber: 343,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("polyline", {
                                                             points: "5 12 12 5 19 12"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                                            lineNumber: 330,
+                                                            lineNumber: 344,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 328,
+                                                    lineNumber: 342,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 324,
+                                                lineNumber: 338,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 320,
+                                        lineNumber: 334,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 295,
+                                lineNumber: 309,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                onClick: handleRunAnalysis,
+                                onClick: runSimulation,
                                 disabled: isLoading,
                                 className: "bg-[#1664bf] text-white px-6 py-[10px] rounded-sm w-max flex items-center gap-3 hover:bg-[#1664bf] transition-colors font-[500] text-sm mt-2 disabled:opacity-50 disabled:cursor-not-allowed",
                                 children: isLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -1923,7 +1933,7 @@ function LiveDemo() {
                                                     strokeWidth: "4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 344,
+                                                    lineNumber: 358,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -1932,20 +1942,20 @@ function LiveDemo() {
                                                     d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 345,
+                                                    lineNumber: 359,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                            lineNumber: 343,
+                                            lineNumber: 357,
                                             columnNumber: 17
                                         }, this),
                                         "Running..."
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                    lineNumber: 342,
+                                    lineNumber: 356,
                                     columnNumber: 15
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                                     children: [
@@ -1967,37 +1977,37 @@ function LiveDemo() {
                                                     y2: "12"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 353,
+                                                    lineNumber: 367,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("polyline", {
                                                     points: "12 5 19 12 12 19"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 354,
+                                                    lineNumber: 368,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                            lineNumber: 352,
+                                            lineNumber: 366,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                    lineNumber: 350,
+                                    lineNumber: 364,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 336,
+                                lineNumber: 350,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 290,
+                        lineNumber: 304,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2013,8 +2023,8 @@ function LiveDemo() {
                             onPointerLeave: handlePointerUp,
                             children: [
                                 EDGES.map((edge)=>{
-                                    const sourceNode = NODE_BY_ID[edge.source];
-                                    const targetNode = NODE_BY_ID[edge.target];
+                                    const sourceNode = graphNodeById[edge.source];
+                                    const targetNode = graphNodeById[edge.target];
                                     if (!sourceNode || !targetNode) return null;
                                     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
                                         x1: sourceNode.x,
@@ -2026,7 +2036,7 @@ function LiveDemo() {
                                         strokeLinecap: "round"
                                     }, edge.id, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 378,
+                                        lineNumber: 392,
                                         columnNumber: 17
                                     }, this);
                                 }),
@@ -2042,7 +2052,7 @@ function LiveDemo() {
                                                 className: "pointer-events-none"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 397,
+                                                lineNumber: 411,
                                                 columnNumber: 19
                                             }, this),
                                             isReservoir && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
@@ -2056,18 +2066,18 @@ function LiveDemo() {
                                                 children: node.label
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 406,
+                                                lineNumber: 420,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, node.id, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 395,
+                                        lineNumber: 409,
                                         columnNumber: 17
                                     }, this);
                                 }),
                                 sensorTokens.map((token)=>{
-                                    const node = NODE_BY_ID[token.nodeId];
+                                    const node = graphNodeById[token.nodeId];
                                     if (!node) return null;
                                     const isDragging = dragState?.tokenIndex === token.sensorIndex;
                                     // If dragging, follow mouse exactly. If not, map to node coordinates.
@@ -2077,7 +2087,6 @@ function LiveDemo() {
                                         onPointerDown: (e)=>handlePointerDown(e, token.sensorIndex, currentX, currentY),
                                         className: `${isDragging ? 'cursor-grabbing' : 'cursor-grab'} z-50`,
                                         style: {
-                                            // Transition is disabled while dragging for instant mouse follow!
                                             transition: isDragging ? 'none' : 'transform 800ms cubic-bezier(0.34, 1.56, 0.64, 1)',
                                             transform: `translate(${currentX}px, ${currentY}px)`
                                         },
@@ -2091,7 +2100,7 @@ function LiveDemo() {
                                                 className: `${isDragging ? '' : 'animate-pulse'} pointer-events-none transition-opacity`
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 445,
+                                                lineNumber: 458,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -2101,7 +2110,7 @@ function LiveDemo() {
                                                 fill: "transparent"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 455,
+                                                lineNumber: 468,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -2114,31 +2123,31 @@ function LiveDemo() {
                                                 className: "pointer-events-none shadow-md"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 458,
+                                                lineNumber: 471,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, `sensor-token-${token.sensorIndex}`, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 434,
+                                        lineNumber: 448,
                                         columnNumber: 17
                                     }, this);
                                 })
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/LiveDemo.tsx",
-                            lineNumber: 363,
+                            lineNumber: 377,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 362,
+                        lineNumber: 376,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LiveDemo.tsx",
-                lineNumber: 288,
+                lineNumber: 302,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2155,7 +2164,7 @@ function LiveDemo() {
                                         children: "ROI Frontier"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 479,
+                                        lineNumber: 492,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2163,13 +2172,13 @@ function LiveDemo() {
                                         children: "Accuracy vs. Cost"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 480,
+                                        lineNumber: 493,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 478,
+                                lineNumber: 491,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2188,7 +2197,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 485,
+                                                lineNumber: 498,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -2202,7 +2211,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 486,
+                                                lineNumber: 499,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -2216,7 +2225,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 487,
+                                                lineNumber: 500,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
@@ -2230,7 +2239,7 @@ function LiveDemo() {
                                                 vectorEffect: "non-scaling-stroke"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 488,
+                                                lineNumber: 501,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -2242,13 +2251,13 @@ function LiveDemo() {
                                                 className: "opacity-80"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 490,
+                                                lineNumber: 503,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 484,
+                                        lineNumber: 497,
                                         columnNumber: 13
                                     }, this),
                                     paretoData.map((point)=>{
@@ -2265,7 +2274,7 @@ function LiveDemo() {
                                                     className: `rounded-full transition-all duration-300 ${isActive ? 'w-[8px] h-[8px] bg-[#F02B11] shadow-[0_0_12px_#F02B11]' : 'w-[4px] h-[4px] bg-[#555] group-hover:bg-gray-300'}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 502,
+                                                    lineNumber: 515,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2273,26 +2282,26 @@ function LiveDemo() {
                                                     children: point.sensors
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                                    lineNumber: 507,
+                                                    lineNumber: 520,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, point.sensors, true, {
                                             fileName: "[project]/src/components/LiveDemo.tsx",
-                                            lineNumber: 496,
+                                            lineNumber: 509,
                                             columnNumber: 17
                                         }, this);
                                     })
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 483,
+                                lineNumber: 496,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 477,
+                        lineNumber: 490,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2305,12 +2314,12 @@ function LiveDemo() {
                                     children: "ML Prediction"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/LiveDemo.tsx",
-                                    lineNumber: 523,
+                                    lineNumber: 536,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 522,
+                                lineNumber: 535,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2333,7 +2342,7 @@ function LiveDemo() {
                                                         strokeWidth: "4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 530,
+                                                        lineNumber: 543,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -2342,26 +2351,26 @@ function LiveDemo() {
                                                         d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 531,
+                                                        lineNumber: 544,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 529,
+                                                lineNumber: 542,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Running PINN inference..."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 533,
+                                                lineNumber: 546,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 528,
+                                        lineNumber: 541,
                                         columnNumber: 15
                                     }, this),
                                     error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2372,7 +2381,7 @@ function LiveDemo() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 538,
+                                        lineNumber: 551,
                                         columnNumber: 15
                                     }, this),
                                     prediction && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2389,7 +2398,7 @@ function LiveDemo() {
                                                                 children: "Ground Truth"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                                lineNumber: 547,
+                                                                lineNumber: 560,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2403,13 +2412,13 @@ function LiveDemo() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                                lineNumber: 548,
+                                                                lineNumber: 561,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 546,
+                                                        lineNumber: 559,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2420,7 +2429,7 @@ function LiveDemo() {
                                                                 children: "Prediction"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                                lineNumber: 551,
+                                                                lineNumber: 564,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2434,19 +2443,19 @@ function LiveDemo() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                                lineNumber: 552,
+                                                                lineNumber: 565,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 550,
+                                                        lineNumber: 563,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 545,
+                                                lineNumber: 558,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2462,7 +2471,7 @@ function LiveDemo() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 557,
+                                                        lineNumber: 570,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2473,19 +2482,32 @@ function LiveDemo() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                                        lineNumber: 558,
+                                                        lineNumber: 571,
                                                         columnNumber: 19
+                                                    }, this),
+                                                    prediction.prediction.predicted_node && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        className: "text-blue-400 text-sm font-[400]",
+                                                        children: [
+                                                            "Predicted Node: N",
+                                                            prediction.prediction.predicted_node,
+                                                            " | Flow: ",
+                                                            prediction.prediction.flow_magnitude?.toFixed(3)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/components/LiveDemo.tsx",
+                                                        lineNumber: 573,
+                                                        columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                                lineNumber: 556,
+                                                lineNumber: 569,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 544,
+                                        lineNumber: 557,
                                         columnNumber: 15
                                     }, this),
                                     !isLoading && !error && !prediction && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2493,35 +2515,35 @@ function LiveDemo() {
                                         children: 'Click "Run Analysis" to run PINN inference'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/LiveDemo.tsx",
-                                        lineNumber: 564,
+                                        lineNumber: 580,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/LiveDemo.tsx",
-                                lineNumber: 526,
+                                lineNumber: 539,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/LiveDemo.tsx",
-                        lineNumber: 521,
+                        lineNumber: 534,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/LiveDemo.tsx",
-                lineNumber: 475,
+                lineNumber: 488,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/LiveDemo.tsx",
-        lineNumber: 277,
+        lineNumber: 291,
         columnNumber: 5
     }, this);
 }
-_s(LiveDemo, "8IPkr/2YsI8aqo9qcn5nvxlDOyc=");
+_s(LiveDemo, "Ea2jdnaY7Uh/+LrficWRGqGMIcE=");
 _c3 = LiveDemo;
 var _c, _c1, _c2, _c3;
 __turbopack_context__.k.register(_c, "NODE_BY_ID$Object.fromEntries$NODES.map");

@@ -71,6 +71,7 @@
     --color-red-400: #ff6568;
     --color-red-900: #82181a;
     --color-green-400: #05df72;
+    --color-blue-400: #54a2ff;
     --color-gray-100: #f3f4f6;
     --color-gray-200: #e5e7eb;
     --color-gray-300: #d1d5dc;
@@ -135,6 +136,7 @@
       --color-red-400: lab(63.7053% 60.7449 31.3109);
       --color-red-900: lab(28.5139% 44.5539 29.0463);
       --color-green-400: lab(78.503% -64.9265 39.7492);
+      --color-blue-400: lab(65.0361% -1.42062 -56.9803);
       --color-gray-100: lab(96.1596% -.082314 -1.13575);
       --color-gray-200: lab(91.6229% -.159085 -2.26791);
       --color-gray-300: lab(85.1236% -.612259 -3.7138);
@@ -417,6 +419,10 @@
 
   .relative {
     position: relative;
+  }
+
+  .static {
+    position: static;
   }
 
   .sticky {
@@ -1305,6 +1311,10 @@
 
   .text-\[\#\] {
     color: #;
+  }
+
+  .text-blue-400 {
+    color: var(--color-blue-400);
   }
 
   .text-gray-100 {

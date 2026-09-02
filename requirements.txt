@@ -1,13 +1,25 @@
-# for training nn and for backend
+# LeakSense ML, simulation, and API dependencies.
+
+# Core numerics / data
 numpy
 pandas
 scipy
+scikit-learn
+
+# PIGNN training and inference
 torch
+torch-geometric
+
+# Water-network simulation and graph utilities
 wntr
+networkx
+
+# Backend API
+fastapi
+uvicorn[standard]
+pydantic
+
+# Notebook / experiment visualization
 tqdm
 matplotlib
-networkx
 plotly
-fastapi
-uvicorn
-pydantic
